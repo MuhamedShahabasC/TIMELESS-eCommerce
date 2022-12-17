@@ -1,0 +1,58 @@
+<%- include('../layouts/header') %> <%- include('../layouts/head-links') %>
+<div class="container line-break-top line-break text-center py-3">
+  <span class="shadow-heading">Customers</span>
+</div>
+<div class="container d-flex justify-content-center mx-auto row my-4">
+  <div class="col-lg-4">
+    <!-- ------------------Seach form------------------>
+    <form class="text-center">
+      <input
+        type="text"
+        name="search"
+        id=""
+        class="form-control my-2"
+        placeholder="Enter email or name"
+      />
+    </form>
+    <!-- ------------------From ends----------------------->
+  </div>
+  <div class="col-lg-3 d-flex align-items-center">
+    <input class="btn btn-dark py-1 px-3" value="search" />
+  </div>
+</div>
+<div class="all-tables mt-5 d-flex flex-row justify-content-center">
+  <div class="datatable">
+    <h4 class="data text-center">Users</h4>
+    <% if(details !=null) { %>
+    <table class="table table-hover table-bordered" style="min-width: 400px">
+      <tr class="bg-dark text-light">
+        <th>Name</th>
+        <th>Email</th>
+        <th>Password</th>
+        <th>Edit</th>
+      </tr>
+      <% details.forEach(function(item){ %>
+      <tr>
+        <td><%= item.name %></td>
+        <td><%= item.email %></td>
+        <td><%= item.password %></td>
+        <td>
+          <a href="/admin/edit-user/?id=<%= item._id%>"
+            ><i
+              class="fa fa-pencil fa-lg fa me-2 text-dark"
+              aria-hidden="true"
+            ></i
+          ></a>
+          <a
+            href="/admin/delete-user/?id=<%= item._id%>"
+            onclick="return confirm('Are you sure?')"
+            ><i class="fa fa-trash fa-lg text-danger" aria-hidden="true"></i
+          ></a>
+        </td>
+      </tr>
+      <% }) %>
+    </table>
+    <% } %>
+  </div>
+</div>
+<%- include('../layouts/footer') %>

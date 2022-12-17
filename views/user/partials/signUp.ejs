@@ -1,0 +1,65 @@
+<%- include('../layouts/header') %>
+<div class="container">
+  <div class="line-break text-center py-4">
+    <span class="shadow-heading">Welcome to </span
+    ><span class="brand-name">TIMELESS</span>
+  </div>
+  <div class="text-center my-5">
+    BUY FROM THE HANDPICKED COLLECTION OF LUXURY WATCH BY <b>TIMELESS</b>
+    <p class="text-danger mt-0 pt-4 fw-bold"><%= locals.errorMessage %></p>
+  </div>
+  <div class="row mb-5">
+    <div class="col-lg-5 mx-auto mb-5">
+      <form action="/user/signUp" method="post">
+        <div class="mb-3">
+          <input
+            type="text"
+            class="form-control"
+            id="form-holder"
+            name="name"
+            placeholder="name"
+            value="hamsan"
+            required
+          />
+        </div>
+        <div class="mb-3">
+          <input
+            class="form-control"
+            id="form-holder"
+            name="number"
+            placeholder="Contact number"
+            pattern="^[0-9]{10}$"
+            required
+          />
+        </div>
+        <div class="mb-3">
+          <input
+            class="form-control"
+            id="form-holder"
+            name="email"
+            placeholder="e-mail"
+            value="muhamedshahabasc@gmail.com"
+            pattern="^(([-\w\d]+)(\.[-\w\d]+)*@([-\w\d]+)(\.[-\w\d]+)*(\.([a-zA-Z]{2,5}|[\d]{1,3})){1,2})$"
+            required
+          />
+        </div>
+        <div class="mb-3">
+          <input
+            type="password"
+            class="form-control"
+            id="form-holder"
+            placeholder="password"
+            name="password"
+            value="hamsan"
+            required
+          />
+        </div>
+        <input type="submit" class="btn btn-dark w-100" value="Send OTP" />
+      </form>
+      <div class="form-footer d-flex justify-content-end">
+        <a href="/user/signIn"> Already have an account? </a>
+      </div>
+    </div>
+  </div>
+</div>
+<%- include('../layouts/footer') %>
