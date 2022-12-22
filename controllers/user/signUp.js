@@ -3,10 +3,10 @@ const UserCLTN = require("../../models/user/details");
 const signUpPage = (req, res) => {
   if (req.session.tempOTP != false) {
     req.session.tempOTP = false;
-    console.log("Account creation OTP: " + req.session.tempOTP);
+    // console.log("Account creation OTP: " + req.session.tempOTP);
   }
   res.render("user/partials/signUp", {
-    documentTitle: "User Sign Up",
+    documentTitle: "User Sign Up | TIMELESS",
   });
 };
 
@@ -27,10 +27,10 @@ const registerUser = async (req, res) => {
     const inputEmail = req.body.email;
     const inputNumber = req.body.number;
     const emailCheck = await UserCLTN.findOne({ email: inputEmail });
-    const numberCheck = await UserCLTN.findOne({ email: inputNumber });
+    const numberCheck = await UserCLTN.findOne({ number: inputNumber });
     if (emailCheck || numberCheck) {
       res.render("user/partials/signUp", {
-        documentTitle: "User Sign Up",
+        documentTitle: "User Sign Up | TIMELESS",
         errorMessage: "User already existing",
       });
     } else {
@@ -72,22 +72,27 @@ const registerUser = async (req, res) => {
 
 const otpPage = (req, res) => {
   res.render("user/partials/otp", {
-    documentTitle: "OTP Verification",
+    documentTitle: "OTP Verification | TIMELESS",
   });
 };
 
 const otpVerification = async (req, res) => {
-  if (req.session.tempOTP == req.body.otp) {
-    console.log("Account creation OTP deleted: " + req.session.tempOTP);
-    newUserDetails.save();
-    req.session.tempOTP = false;
-    res.send("Account creation OTP deleted.");
-  } else {
-    res.render("user/partials/otp", {
-      documentTitle: "OTP Verification",
-      errorMessage: "Invalid OTP",
-    });
+  if (req.session.tempOTP) {
+    if (req.session.tempOTP == req.body.otp) {
+      console.log("Account creation OTP deleted: " + req.session.tempOTP);
+      await newUserDetails.save();
+      req.session.tempOTP = false;
+      res.redirect('/user/signIn')
+    } else {
+      res.render("user/partials/otp", {
+        documentTitle: "OTP Verification | TIMELESS",
+        errorMessage: "Invalid OTP",
+      });
+    }
+  } else{
+    res.redirect('/user/signUp')
   }
+  
 };
 
 module.exports = {

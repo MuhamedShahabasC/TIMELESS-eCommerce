@@ -7,8 +7,8 @@ const signInPage = (req, res) => {
 const adminCLTN = require("../../models/admin/details");
 const bcrypt = require("bcrypt");
 const adminVerification = async (req, res) => {
-  inputEmail = req.body.email;
-  inputPassword = req.body.password;
+  const inputEmail = req.body.email;
+  const inputPassword = req.body.password;
   const adminFind = await adminCLTN.findOne({ email: inputEmail });
   if (adminFind) {
     const hashedCheck = await bcrypt.compare(inputPassword, adminFind.password);
@@ -18,13 +18,13 @@ const adminVerification = async (req, res) => {
       res.redirect("/admin/dashboard");
     } else {
       res.render("admin/partials/signIn", {
-        documentTitle: "Admin Sign In",
+        documentTitle: "Admin Sign In | TIMELESS",
         errorMessage: "Incorrect Password",
       });
     }
   } else {
     res.render("admin/partials/signIn", {
-      documentTitle: "Admin Sign In",
+      documentTitle: "Admin Sign In | TIMELESS",
       errorMessage: "Admin not found",
     });
   }

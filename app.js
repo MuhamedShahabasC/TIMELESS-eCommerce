@@ -8,16 +8,18 @@ const path = require("path");
 app.set("view engine", "ejs");
 
 // Database
-require('./config/db');
+require("./config/db");
 
 // Session
-const session = require('express-session')
-app.use(session({
-  secret: 'timeless-ecommerce-project-secretkey',
-  name: 'TIMELESS-Session',
-  resave: false,
-  saveUninitialized: true
-}))
+const session = require("express-session");
+app.use(
+  session({
+    secret: "timeless-ecommerce-project-secretkey",
+    name: "TIMELESS-Session",
+    resave: false,
+    saveUninitialized: true,
+  })
+);
 
 // Application configs
 app.use(express.json());
@@ -35,7 +37,6 @@ app.use("/user", userRouter);
 
 const adminRouter = require("./routes/admin");
 app.use("/admin", adminRouter);
-
 
 // Create Server
 require("dotenv").config();

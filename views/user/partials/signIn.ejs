@@ -4,10 +4,10 @@
     <span class="shadow-heading">Welcome Back</span>
   </div>
   <div class="row my-5 pt-4">
-    <span class="text-center pb-3" style="font-size: 0.8rem; text-transform: none;">
-      <p class="text-danger mt-0 pt-4 fw-bold text-uppercase"><%= locals.errorMessage %></p>
-  </span>
     <div class="col-lg-5 mx-auto">
+      <span class=" mx-auto text-center pb-3" style="font-size: 0.8rem; text-transform: none;">
+        <% if(locals.errorMessage) {%><p class="alert alert-danger text-danger mt-0  fw-bold text-uppercase mb-4"><%= locals.errorMessage %></p> <%}%>
+    </span>
       <form action="/user/signIn" method="post">
         <div class="mb-3">
           <input
@@ -30,7 +30,7 @@
         <input type="submit" class="btn btn-dark w-100" value="Sign in" />
       </form>
       <div class="form-footer d-flex justify-content-between">
-        <a href="">
+        <a href="/user/forgotPassword">
             Forgot password?
         </a>
         <a href="/user/signUp">

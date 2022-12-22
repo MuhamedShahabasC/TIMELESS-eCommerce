@@ -1,0 +1,87 @@
+<%- include('../layouts/header') %> <%- include('../layouts/head-links') %>
+<div class="container" style="text-decoration: none">
+<form action="" method="post" enctype="multipart/form-data" class="container w-50 my-5">
+    <div class="mb-3">
+      <input
+        type="text"
+        class="form-control"
+        id="form-holder"
+        value="<%= product.name %>"
+        name="<%= product.name %>"
+        placeholder="Name"
+        disabled
+      />
+    </div>
+    <div class="mb-3">
+        <label for="HeroImage" class="px-1" style="font-size: 0.75rem;">Upload Hero Image</label>
+      <input
+        class="form-control"
+        id="form-holder"
+        name="HeroImage"
+        value="<%=product.heroImage%>"
+        type="file"
+        required
+      />
+    </div>
+    <div class="mb-3">
+      <select id="inputState" class="form-control" name="category" required> 
+        <option selected>Choose category</option> 
+        <%categories.forEach((data)=>{%> 
+          <option><%=data.name%></option> 
+        <%})%> 
+      </select>
+    </div>
+    <div class="mb-3">
+      <input
+        type="text"
+        class="form-control"
+        id="form-holder"
+        placeholder="Brand"
+        name="brand"
+        value="<%= product.brand %>"
+        required
+      />
+    </div>
+    <div class="mb-3">
+        <input
+          type="text"
+          class="form-control"
+          id="form-holder"
+          placeholder="Color"
+          name="color"
+          value="<%= product.color %>"
+          required
+        />
+      </div>
+    <div class="mb-3">
+        <input
+          type="number"
+          class="form-control"
+          id="form-holder"
+          placeholder="Price"
+          name="price"
+          value="<%= product.price %>"
+          required
+        />
+      </div>
+      <div class="mb-3">
+        <input
+          type="number"
+          class="form-control"
+          id="form-holder"
+          placeholder="Stock"
+          name="stock"
+          value="<%= product.stock %>"
+          required
+        />
+      </div>
+      <div class="float-end mb-5">
+        <a href="/admin/product_management" onclick="return confirm('Discard Changes ?')" class="btn btn-secondary text-white">Cancel</a>
+        <button type="submit" class="btn btn-success">
+          Save changes
+        </button>
+        </form>
+      </div>
+</div>
+
+  <%- include('../layouts/footer') %>

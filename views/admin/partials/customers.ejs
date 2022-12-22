@@ -5,7 +5,7 @@
 <div class="container d-flex justify-content-center mx-auto row my-4">
   <div class="col-lg-4">
     <!-- ------------------Seach form------------------>
-    <form class="text-center">
+    <form class="text-center d-flex">
       <input
         type="text"
         name="search"
@@ -13,41 +13,39 @@
         class="form-control my-2"
         placeholder="Enter email or name"
       />
+      <button type="submit" class="btn btn-dark mx-3 my-2 px-3 text-uppercase fw-light">Search</button>
     </form>
     <!-- ------------------From ends----------------------->
   </div>
-  <div class="col-lg-3 d-flex align-items-center">
-    <input class="btn btn-dark py-1 px-3" value="search" />
-  </div>
 </div>
 <div class="all-tables mt-5 d-flex flex-row justify-content-center">
-  <div class="datatable">
-    <h4 class="data text-center">Users</h4>
+  <div class="datatable row">
     <% if(details !=null) { %>
-    <table class="table table-hover table-bordered" style="min-width: 400px">
+    <table class="table table-bordered fw-light col-lg-9" style="min-width: 400px">
       <tr class="bg-dark text-light">
         <th>Name</th>
         <th>Email</th>
-        <th>Password</th>
-        <th>Edit</th>
+        <th>Mobile</th>
+        <th>Access</th>
+        <th>Action</th>
       </tr>
       <% details.forEach(function(item){ %>
-      <tr>
+      <tr class="">
         <td><%= item.name %></td>
         <td><%= item.email %></td>
-        <td><%= item.password %></td>
-        <td>
-          <a href="/admin/edit-user/?id=<%= item._id%>"
-            ><i
-              class="fa fa-pencil fa-lg fa me-2 text-dark"
-              aria-hidden="true"
-            ></i
-          ></a>
+        <td><%= item.number %></td>
+        <td class="text-center"><%= item.access %></td>
+        <td class="text-center">
           <a
-            href="/admin/delete-user/?id=<%= item._id%>"
-            onclick="return confirm('Are you sure?')"
-            ><i class="fa fa-trash fa-lg text-danger" aria-hidden="true"></i
-          ></a>
+            href="/admin/customer_management/changeAccess?id=<%= item._id%>&currentAccess=<%= item.access %>"
+            onclick="return confirm('Are you sure to change access of <%= item.email %>?')"
+          >
+            <% if (item.access == true) {%>
+            <i class="py-1 fa fa-lock fa-lg text-danger" aria-hidden="true"></i>
+            <%}else{%>
+            <i class="fa fa-lock-open fa-lg text-success" aria-hidden="true"></i
+            ><%} %>
+          </a>
         </td>
       </tr>
       <% }) %>

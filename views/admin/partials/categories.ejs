@@ -1,0 +1,69 @@
+<%- include('../layouts/header') %> <%- include('../layouts/head-links') %>
+<div class="container">
+  <div class="line-break text-center py-4">
+    <span class="shadow-heading">Categories</span>
+  </div>
+  <div class="row mb-5 pt-4 mx-auto">
+    <span
+      class="text-center pb-3"
+      style="font-size: 0.8rem; text-transform: none"
+    >
+      <p class="text-danger mt-0 pt-4 fw-bold text-uppercase">
+        <%= locals.errorMessage %>
+      </p>
+    </span>
+    <div
+      class="col-lg-6 all-tables d-flex flex-row justify-content-center"
+    >
+      <div class="datatable">
+        <% if(details !=null) { %>
+        <table class="table table-bordered fw-light" style="min-width: 400px">
+          <tr class="bg-dark text-light">
+            <th>Name</th>
+            <th>Action</th>
+          </tr>
+          <% details.forEach(function(item){ %>
+          <tr class="">
+            <td><%= item.name %></td>
+            <td class="text-center">
+              <a
+                href="/admin/categories/edit?id=<%= item._id%>"
+                onclick="return confirm('Are you sure to edit <%= item.name %>?')"
+              ><i
+              class="py-1 fa fa-edit fa-lg text-dark"
+              aria-hidden="true"
+            ></i>
+              </a>
+              <a
+                href="/admin/categories/delete_category?id=<%= item._id%>"
+                onclick="return confirm('Are you sure to delete <%= item.name %>?')"
+              ><i
+                  class="py-1 fa fa-trash fa-lg text-danger"
+                  aria-hidden="true"
+                ></i>
+              </a>
+            </td>
+          </tr>
+          <% }) %>
+        </table>
+        <% } %>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <form action="" method="post">
+        <div class="mb-3">
+          <input
+            type="string"
+            class="form-control"
+            id="form-holder"
+            placeholder="Enter Category Name"
+            name="category"
+          />
+        </div>
+        <input type="submit" class="btn btn-dark w-100" value="Add Category" />
+      </form>
+    </div>
+  </div>
+</div>
+
+<%- include('../layouts/footer') %>
