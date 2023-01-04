@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const categoryCLTN = require("./category");
 
 const productSchema = new mongoose.Schema({
   name: {
@@ -6,7 +7,8 @@ const productSchema = new mongoose.Schema({
     require,
   },
   category: {
-    type: String,
+    type: mongoose.Types.ObjectId,
+    ref: categoryCLTN,
     require,
   },
   brand: {
@@ -49,18 +51,7 @@ const productSchema = new mongoose.Schema({
     type: String,
     require,
   },
-  image1: {
-    type: String,
-    require,
-  },
-  image2: {
-    type: String,
-    require,
-  },
-  image3: {
-    type: String,
-    require,
-  },
+  images: [String],
   stock: Number,
   listed: { type: Boolean, default: true },
 });

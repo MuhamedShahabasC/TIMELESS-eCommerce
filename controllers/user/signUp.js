@@ -1,27 +1,35 @@
 const UserCLTN = require("../../models/user/details");
+const CartCLTN = require("../../models/user/cart");
+const WishlistCLTN = require("../../models/user/wishlist");
 
 const signUpPage = (req, res) => {
-  if (req.session.tempOTP != false) {
-    req.session.tempOTP = false;
-    // console.log("Account creation OTP: " + req.session.tempOTP);
+  try {
+    if (req.session.tempOTP != false) {
+      req.session.tempOTP = false;
+      // console.log("Account creation OTP: " + req.session.tempOTP);
+    }
+    res.render("user/partials/signUp", {
+      documentTitle: "User Sign Up | TIMELESS",
+    });
+  } catch (error) {
+    console.log("Error rendering user signup page: " + error);
   }
-  res.render("user/partials/signUp", {
-    documentTitle: "User Sign Up | TIMELESS",
-  });
 };
 
 // Register User
 const bcrypt = require("bcrypt");
 const saltRounds = 10;
 const nodemailer = require("nodemailer");
+const { default: mongoose } = require("mongoose");
 let newUserDetails;
+let otpKiller;
 const registerUser = async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
-    newUserDetails = await new UserCLTN({
-      name: req.body.name,
+    newUserDetails = new UserCLTN({
+      name: req.body.name.trim(),
       number: req.body.number,
-      email: req.body.email,
+      email: req.body.email.toLowerCase(),
       password: hashedPassword,
     });
     const inputEmail = req.body.email;
@@ -38,7 +46,7 @@ const registerUser = async (req, res) => {
       req.session.tempOTP = tempOTP;
 
       // OTP Session destroys in 5mins
-      setTimeout(() => {
+      otpKiller = setTimeout(() => {
         req.session.tempOTP = false;
         console.log("Account creation OTP Expired.");
       }, 300000);
@@ -63,36 +71,59 @@ const registerUser = async (req, res) => {
       // Send mail
       await transporter.sendMail(mailOptions);
       console.log("Account creation OTP Sent: " + req.session.tempOTP);
-      res.redirect("/user/otp_verification");
+      res.redirect("/users/otp_verification");
     }
   } catch (error) {
-    console.log("Signup error: " + error);
+    console.log("Error signing up user: " + error);
   }
 };
 
 const otpPage = (req, res) => {
-  res.render("user/partials/otp", {
-    documentTitle: "OTP Verification | TIMELESS",
-  });
+  try {
+    res.render("user/partials/otp", {
+      documentTitle: "OTP Verification | TIMELESS",
+    });
+  } catch (error) {
+    console.log("Error rendering OTP Page: " + error);
+  }
 };
 
 const otpVerification = async (req, res) => {
-  if (req.session.tempOTP) {
-    if (req.session.tempOTP == req.body.otp) {
-      console.log("Account creation OTP deleted: " + req.session.tempOTP);
-      await newUserDetails.save();
-      req.session.tempOTP = false;
-      res.redirect('/user/signIn')
+  try {
+    if (req.session.tempOTP) {
+      if (req.session.tempOTP == req.body.otp) {
+        console.log("Account creation OTP deleted: " + req.session.tempOTP);
+        await newUserDetails.save();
+        req.session.tempOTP = false;
+        clearTimeout(otpKiller);
+        res.redirect("/users/signIn");
+        const userID = newUserDetails._id;
+        const newCart = await new CartCLTN({
+          customer: mongoose.Types.ObjectId(userID),
+        });
+        await UserCLTN.findByIdAndUpdate(userID, {
+          $set: { cart: mongoose.Types.ObjectId(newCart._id) },
+        });
+        await newCart.save();
+        const newWishlist = await new WishlistCLTN({
+          customer: mongoose.Types.ObjectId(userID),
+        });
+        await UserCLTN.findByIdAndUpdate(userID, {
+          $set: { wishlist: mongoose.Types.ObjectId(newWishlist._id) },
+        });
+        await newWishlist.save();
+      } else {
+        res.render("user/partials/otp", {
+          documentTitle: "OTP Verification | TIMELESS",
+          errorMessage: "Invalid OTP",
+        });
+      }
     } else {
-      res.render("user/partials/otp", {
-        documentTitle: "OTP Verification | TIMELESS",
-        errorMessage: "Invalid OTP",
-      });
+      res.redirect("/users/signUp");
     }
-  } else{
-    res.redirect('/user/signUp')
+  } catch (error) {
+    console.log("Error verifying OTP: " + error);
   }
-  
 };
 
 module.exports = {

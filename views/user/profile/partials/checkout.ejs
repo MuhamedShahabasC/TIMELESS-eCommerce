@@ -1,0 +1,182 @@
+<%- include('../layouts/header') %> 
+<%- include('../layouts/user-links') %>
+
+<div class="container row mx-auto mb-4">
+  <div class="line-break text-center py-3 mb-3">
+    <span class="shadow-heading">Order Summary</span>
+  </div>
+  <div class="col-lg-8">
+    <div class="all-products rounded p-3" style="border: 1px solid #dbdbdb">
+      <h6 class="border-bottom pb-2">Products</h6>
+      <% if(products != null){ %>
+        <%products.forEach((product,i)=> {%>
+      <div class="product-details d-flex justify-content-between pb-1 px-5" style="border-bottom: 1px solid #dbdbdb" >
+        <span><%=i+1%>.</span>
+        <span class="flex-grow-1 mx-3"><%=product.name.name%></span>
+        <span><span style="text-transform: none;">x</span> <%=product.quantity%></span>
+        <span class="mx-5">₹ <%=product.price%></span>
+      </div>
+      <%})%>
+      <%}%>
+    </div>
+    <div class="addresses rounded p-3 my-3" style="border: 1px solid #dbdbdb">
+      <h6 class="border-bottom pb-2">Shipping address</h6>
+
+    <% if(defaultAddress != 0){%>
+      <span style="text-transform: None;">
+        <%=defaultAddress.building%></br><%=defaultAddress.address%> - <%=defaultAddress.pincode%></br><%=defaultAddress.country%></br></span>
+      <div class="d-flex justify-content-between mt-2">
+        <span style="font-size: 0.85rem;text-transform: None;">
+          Alternate No: <%=defaultAddress.contactNumber%>
+        </span>
+          <!-- Button trigger modal -->
+        <button type="button" class="btn btn-sm btn-dark text-white" data-bs-toggle="modal" data-bs-target="#staticBackdrop" style="font-size: 0.7rem; letter-spacing: 2px;">
+        Change Address
+        </button>
+      </div>
+      <form action="/users/cart/checkout" method="post">
+      <input type="text" name="addressID" value="<%=defaultAddress._id%>" hidden>
+      <%}else{%>
+        <h6 class="text-danger mt-3">You have not added any addresses.</h6>
+        <a class="my-2 btn btn-sm btn-dark text-white" href="/users/addresses" style="font-size: 0.7rem; letter-spacing: 2px;">
+          Add an Address
+        </a>
+  <%}%>
+    </div>
+    
+    <div class="addresses rounded p-3 my-3" style="border: 1px solid #dbdbdb">
+      <h6 class="border-bottom pb-2">Mode of Payment</h6>
+
+      <div class="form-check d-flex align-items-center" style="font-size: 0.85rem;">
+        <input class="form-check-input" type="radio" name="paymentMethod" value="COD" id="flexRadioDefault1" checked>
+        <label class="form-check-label mx-2" for="flexRadioDefault1">
+          Cash on delivery
+        </label>
+      </div>
+      <div class="form-check d-flex align-items-center" style="font-size: 0.85rem;">
+        <input class="form-check-input" type="radio" name="paymentMethod" value="razorPay" id="flexRadioDefault2">
+        <label class="form-check-label mx-2" for="flexRadioDefault2">
+          Pay Online - <b>Razor Pay</b>
+        </label>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="order-summary rounded p-3 my-3 d-flex flex-column" style="border: 1px solid #dbdbdb; font-size: 0.9rem;" >
+        <div class="mb-2">
+          <input
+            type="text"
+            class="form-control"
+            id="couponCode"
+            placeholder="Coupon Code"
+            name = "couponCode"
+            onkeyup="checkCoupon()"
+          />
+        </div>
+        <span id="couponMessage" class="bg-light px-2 rounded m-2">
+
+        </span>
+        <script>
+          function checkCoupon(){
+            $.ajax({
+              url: "/users/cart/checkout",
+              method: "put",
+              data: {
+                couponCode: $("#couponCode").val()
+              },
+              success: (res) => {
+                $("#couponMessage").html(res.data.couponCheck)
+                $("#couponDiscount").html(res.data.discountPrice)
+                $("#inputCouponDiscount").val(res.data.discountPrice)
+                $("#finalPrice").html(res.data.finalPrice)
+                $("#inputFinalPrice").val(res.data.finalPrice)
+              }
+            })
+          }
+        </script>
+    </div>
+    <div class="order-summary rounded p-3 my-3 d-flex flex-column" style="border: 1px solid #dbdbdb; font-size: 0.9rem;">
+      <div class="d-flex justify-content-between border-bottom p-1">
+        <span>Price:</span>
+        <span>₹ <%= userCart.totalPrice%></span>
+      </div>
+      <div class="d-flex justify-content-between border-bottom p-1">
+        <span>Discount Price:</span>
+        <div>
+          ₹<span id="couponDiscount"> 0</span>
+        </div>
+      </div>
+      <input type="number" name="couponDiscount" value="" id="inputCouponDiscount" hidden>
+      <div class="d-flex justify-content-between fw-bold p-1">
+        <span>Final Price:</span>
+        <div>
+          ₹<span id="finalPrice"> <%= userCart.totalPrice%></span>
+        </div>
+      </div>
+      <input type="number" name="finalPrice" value="<%= userCart.totalPrice%>" id="inputFinalPrice" hidden>
+    </div>
+    <div class="order-summary rounded p-3 my-3 d-flex flex-column" style="border: 1px solid #dbdbdb; font-size: 0.9rem;">
+      <button type="submit" class="text-white btn btn-dark btn-sm" <% if(defaultAddress == 0){%>style="pointer-events: none;background-color: grey"<%}%>>Place Order</button>
+    </div>
+  </form>
+  </div>
+</div>
+
+<!-- Address Modal -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Change default Address</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <%if(allAddresses!=null){%>
+          <form action="/users/cart/checkout/changeDefaultAddress" method="post">
+          <% allAddresses.forEach((address,i) => { %>
+            <div class="form-check d-flex align-items-center rounded mb-2" style="border: 1px solid #dbdbdb;">
+              <input class="form-check-input mx-2" type="radio" name="DefaultAddress" id="radio<%=i+1%>" value="<%=address._id%>">
+              <label class="form-check-label m-2" for="radio<%=i+1%>" >
+                 <span style="text-transform: None;">
+                  <%=address.building%></br><%=address.address%> - <%=address.pincode%></br><%=address.country%></br></span>
+                  <span style="font-size: 0.85rem;text-transform: None;">
+                    Alternate No: <%=address.contactNumber%>
+                  </span>
+              </label>
+            </div>
+            <%})%>    
+      </div>
+      <div class="modal-footer d-flex justify-content-between">
+        <a href="/users/addresses" class="btn btn-sm btn-dark text-white" style="font-size: 0.85rem;text-transform: none; letter-spacing: 0px;">Add new address</a>
+        <div>
+          <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-sm btn-dark text-white" >Set as default</button>
+        </div>
+      </form>
+      <%}%>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Order success Modal -->
+<div class="modal fade" id="orderSuccess" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Understood</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<%- include('../layouts/footer') %>

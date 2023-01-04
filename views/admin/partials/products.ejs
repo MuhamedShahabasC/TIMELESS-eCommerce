@@ -111,16 +111,26 @@
                       <input
                         class="form-control"
                         id="form-holder"
-                        name="HeroImage"
+                        name="heroImage"
                         type="file"
                         required
                       />
                     </div>
                     <div class="mb-3">
-                      <select id="inputState" class="form-control" name="category"> 
+                      <label for="images" class="px-1" style="font-size: 0.75rem;">Upload 3 Images</label>
+                    <input
+                      class="form-control"
+                      id="images"
+                      name="images"
+                      type="file"
+                      multiple
+                    />
+                  </div>
+                    <div class="mb-3">
+                      <select id="inputState" class="form-control" name="categoryID"> 
                         <option selected>Choose category</option> 
                         <%categories.forEach((data)=>{%> 
-                          <option><%=data.name%></option> 
+                          <option value="<%=data._id%>"><%=data.name%></option> 
                         <%})%> 
                       </select>
                     </div>
@@ -161,6 +171,66 @@
                           id="form-holder"
                           placeholder="Stock"
                           name="stock"
+                          required
+                        />
+                      </div>
+                      <div class="mb-3">
+                        <input
+                          type="number"
+                          class="form-control"
+                          id="form-holder"
+                          placeholder="Reference Number"
+                          name="refNumber"
+                          required
+                        />
+                      </div>
+                      <div class="mb-3">
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="form-holder"
+                          placeholder="Model Case"
+                          name="modelCase"
+                          required
+                        />
+                      </div>
+                      <div class="mb-3">
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="form-holder"
+                          placeholder="Water Resistance"
+                          name="waterRes"
+                          required
+                        />
+                      </div>
+                      <div class="mb-3">
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="form-holder"
+                          placeholder="Movement"
+                          name="movement"
+                          required
+                        />
+                      </div>
+                      <div class="mb-3">
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="form-holder"
+                          placeholder="Power Reserve"
+                          name="powerRes"
+                          required
+                        />
+                      </div>
+                      <div class="mb-3">
+                        <input
+                          type="text"
+                          class="form-control"
+                          id="form-holder"
+                          placeholder="Bracelet"
+                          name="bracelet"
                           required
                         />
                       </div>
@@ -216,8 +286,8 @@
             <% products.forEach(function(item){ %>
             <tr>
               <td><%= item.name %></td>
-              <td class="text-center"><img src="/public/img/products/<%= item.heroImage %>" alt="" width="60px" height="80px"></td>
-              <td><%= item.category %></td>
+              <td class="text-center"><img src="/public/img/products/<%= item.heroImage %>" alt="" width="120px" height="80px"></td>
+              <td><%= item.category.name %></td>
               <td><%= item.brand %></td>
               <td><%= item.price %></td>
               <td><%= item.stock %></td>

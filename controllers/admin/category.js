@@ -10,7 +10,8 @@ const list = async (req, res) => {
 };
 
 const addCategory = async (req, res) => {
-  const inputCategory = req.body.category;
+  let inputCategory = req.body.category;
+  inputCategory = inputCategory.toLowerCase();
   const categories = await categoryCLTN.find({});
   const categoryCheck = await categoryCLTN.findOne({ name: inputCategory });
   if (categoryCheck) {
@@ -30,35 +31,51 @@ const addCategory = async (req, res) => {
 
 let currentCategory;
 const editPage = async (req, res) => {
-  const categoryId = req.query.id;
-  currentCategory = await categoryCLTN.findById(categoryId);
-  res.render("admin/partials/editCategory", {
-    documentTitle: "Edit Category | TIMELESS",
-    category: currentCategory,
-  });
+  try {
+    const categoryId = req.query.id;
+    currentCategory = await categoryCLTN.findById(categoryId);
+    res.render("admin/partials/editCategory", {
+      documentTitle: "Edit Category | TIMELESS",
+      category: currentCategory,
+    });
+  } catch (error) {
+    console.log("Error GET category Page: " + error);
+  }
 };
 
 const editCategory = async (req, res) => {
-  const duplicationCheck = await categoryCLTN.findOne({ name: req.body.name });
-    if (duplicationCheck==null) {
-    await categoryCLTN.findByIdAndUpdate(
-      { _id: currentCategory._id },
-      { $set: { name: req.body.name } }
-    );
-    res.redirect("/admin/categories");
-  } else{
-    res.render("admin/partials/editCategory", {
-      documentTitle: "Edit Category | TIMELESS",
-      errorMessage: "Duplication of categories not allowed",
-      category: null,
+  try {
+    let newCategory = req.body.name
+    newCategory = newCategory.toLowerCase();
+    const duplicationCheck = await categoryCLTN.findOne({
+      name: newCategory
     });
+    if (duplicationCheck == null) {
+      await categoryCLTN.findByIdAndUpdate(
+        { _id: currentCategory._id },
+        { $set: { name: newCategory } }
+      );
+      res.redirect("/admin/categories");
+    } else {
+      res.render("admin/partials/editCategory", {
+        documentTitle: "Edit Category | TIMELESS",
+        errorMessage: "Duplication of categories not allowed",
+        category: null,
+      });
+    }
+  } catch (error) {
+    console.log("Error POST edit category Page: " + error);
   }
 };
 
 const deleteCategory = async (req, res) => {
-  const categoryId = req.query.id;
-  const deleteUser = await categoryCLTN.findByIdAndDelete(categoryId);
-  res.redirect("/admin/categories");
+  try {
+    const categoryId = req.query.id;
+    const deleteUser = await categoryCLTN.findByIdAndDelete(categoryId);
+    res.redirect("/admin/categories");
+  } catch (error) {
+    console.log("Error deleting category: " + error);
+  }
 };
 
 module.exports = {

@@ -12,22 +12,21 @@
         disabled
       />
     </div>
-    <div class="mb-3">
+    <div class="mb-3 d-flex flex-column">
         <label for="HeroImage" class="px-1" style="font-size: 0.75rem;">Upload Hero Image</label>
+        <img class=" border" src="/public/img/products/<%=product.heroImage%>" width="150px"  alt="">
       <input
         class="form-control"
         id="form-holder"
-        name="HeroImage"
-        value="<%=product.heroImage%>"
+        name="heroImage"
         type="file"
-        required
       />
     </div>
     <div class="mb-3">
-      <select id="inputState" class="form-control" name="category" required> 
+      <select id="inputState" class="form-control" name="category" aria-valuenow="<%=product.category%>" required> 
         <option selected>Choose category</option> 
         <%categories.forEach((data)=>{%> 
-          <option><%=data.name%></option> 
+          <option value="<%=data._id%>"><%=data.name%></option> 
         <%})%> 
       </select>
     </div>

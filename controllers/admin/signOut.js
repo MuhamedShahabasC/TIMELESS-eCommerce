@@ -1,7 +1,11 @@
 const signOut = (req, res) => {
-    res.redirect('/admin');
-}
+  try {
+    res.redirect("/admin");
+  } catch (error) {
+    console.log("Error signing out admin: " + error);
+  }
+};
 
 module.exports = {
-    signOut
-}
+  signOut,
+};

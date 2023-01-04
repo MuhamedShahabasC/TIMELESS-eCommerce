@@ -21,7 +21,7 @@ app.use(
   })
 );
 
-// Application configs
+// To create req object
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -33,10 +33,22 @@ const indexRouter = require("./routes/index");
 app.use("/", indexRouter);
 
 const userRouter = require("./routes/user");
-app.use("/user", userRouter);
+app.use("/users", userRouter);
 
 const adminRouter = require("./routes/admin");
 app.use("/admin", adminRouter);
+
+// 404 Rendering
+const UserCLTN = require("./models/user/details");
+app.all("*", async (req, res) => {
+  const currentUser = await UserCLTN.findById(req.session.userID)
+  res.render("user/partials/404", {
+    documentTitle: "404 | Page not found",
+    url: req.originalUrl,
+    session: req.session.userID,
+    currentUser
+  });
+});
 
 // Create Server
 require("dotenv").config();

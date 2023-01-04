@@ -1,0 +1,43 @@
+<%- include('../layouts/header') %> 
+<%- include('../layouts/user-links') %>
+
+<div class="container mx-auto">
+  <div class="line-break text-center py-4">
+    <span class="shadow-heading">Your Wishlist</span>
+  </div>
+  <div class="row justify-content-center m-3">
+    <div class="col-lg-6">
+      <% if(userWishlist!= null && userWishlist.products.length !=0){%>
+        <% userWishlist.products.forEach((product) => {%>
+      <div class="d-flex rounded my-2 p-3" style="border: 1px solid #dbdbdb">
+        <div class="prod-img">
+          <img
+            src="../../../../public/img/products/<%=product.heroImage%>"
+            alt=""
+            height="150px"
+          />
+        </div>
+        <div
+          class="prod-details d-flex flex-grow-1 flex-column justify-content-between"
+        >
+          <h5><%=product.name%></h5>
+          <h6><%=product.brand%></h6>
+          <span style="font-size: 0.85rem ;"> Price: <%=product.price%></span>
+          <div class="d-flex justify-content-end mt-2">
+            <a href="/users/wishlist/addToCart/<%=product._id%>" class="btn btn-secondary btn-sm text-white mx-2">Add To cart</a>
+            <a href="/users/wishlist/removeFromWishlist/<%=product._id%>" onclick="return confirm('Proceed to remove <%=product.name%>')" class="btn btn-dark btn-sm text-white">Remove</a>
+          </div>
+        </div>
+      </div>
+      <%})%>
+      <%}else{%>
+        <h4 class="text-center  my-4 fw-light">No products on your wishlist yet.</h4>
+        <div class="text-center my-4 fw-bold ">
+          <a href="/" class=" text-decoration-underline fst-italic">Continue shopping <i class="fa fa-arrow-right"></i></a>
+      </div>
+        <%}%>
+    </div>
+  </div>
+</div>
+
+<%- include('../layouts/footer') %>

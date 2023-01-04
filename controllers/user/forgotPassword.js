@@ -10,7 +10,7 @@ const Page = (req, res) => {
 
 const emailVerification = async (req, res) => {
   const inputEmail = req.body.email;
-  const mailChecker = await UserCLTN.find({ email: inputEmail });
+  const mailChecker = await UserCLTN.findOne({ email: inputEmail });
   if (mailChecker) {
     const tempOTP = Math.floor(Math.random() * (99999 - 10000 + 1)) + 10000;
     req.session.resetPasswordAuth = inputEmail;
@@ -35,7 +35,7 @@ const emailVerification = async (req, res) => {
     await transporter.sendMail(mailOptions);
     req.session.resetOTP = tempOTP;
     console.log("User Reset OTP Sent: " + req.session.resetOTP);
-    res.redirect("/user/forgotPassword/otpVerification");
+    res.redirect("/users/forgotPassword/otpVerification");
   } else {
     res.render("user/partials/forgotPassword", {
       documentTitle: "Forgot Password | User | TIMELESS",
@@ -50,7 +50,7 @@ const otpPage = (req, res) => {
       documentTitle: "Update User Password | TIMELESS",
     });
   } else {
-    res.redirect("/user/signIn");
+    res.redirect("/users/signIn");
   }
 };
 
@@ -62,7 +62,7 @@ const otpVerification = (req, res) => {
       req.session.resetOTP = false;
       req.session.updatePassword = true;
       console.log("Session created for user password change");
-      res.redirect("/user/changePassword");
+      res.redirect("/users/changePassword");
     } else {
       res.render("user/partials/otp", {
         documentTitle: "Update User Password | TIMELESS",
@@ -70,7 +70,7 @@ const otpVerification = (req, res) => {
       });
     }
   } else {
-    res.redirect("/user/signIn");
+    res.redirect("/users/signIn");
   }
 };
 
@@ -80,7 +80,7 @@ const passwordChangePage = (req, res) => {
       documentTitle: "User Password Reset | TIMELESS",
     });
   } else {
-    res.redirect("/user/forgotPassword");
+    res.redirect("/users/forgotPassword");
   }
 };
 
@@ -96,9 +96,9 @@ const updatePassword = async (req, res) => {
     req.session.updatePassword = false;
     req.session.resetPasswordAuth = false;
     console.log("User password updated.");
-    res.redirect("/user/signIn");
+    res.redirect("/users/signIn");
   } else {
-    res.redirect("/user/signIn");
+    res.redirect("/users/signIn");
   }
 };
 

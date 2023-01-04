@@ -1,7 +1,12 @@
 const signOut = (req, res) => {
-    res.redirect('/user/signIn');
-}
+  try {
+    req.session.destroy();
+    res.redirect("/");
+  } catch (error) {
+    console.log("Error signing out user: " + error);
+  }
+};
 
 module.exports = {
-    signOut
-}
+  signOut,
+};
