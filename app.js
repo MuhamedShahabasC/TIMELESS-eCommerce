@@ -42,7 +42,7 @@ app.use("/admin", adminRouter);
 const UserCLTN = require("./models/user/details");
 app.all("*", async (req, res) => {
   const currentUser = await UserCLTN.findById(req.session.userID)
-  res.render("user/partials/404", {
+  res.render("index/404", {
     documentTitle: "404 | Page not found",
     url: req.originalUrl,
     session: req.session.userID,

@@ -1,10 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const sessionCheck = require("../middlewares/user/sessionCheck");
-
-router.get("/", (req, res) => {
-  res.send("User login");
-});
+const objectIdCheck = require("../middlewares/user/objectIdCheck");
+const imageUpload = require("../utilities/imageUpload");
+const imageProcessor = require("../utilities/imageProcessor");
 
 const signUp = require("../controllers/user/signUp");
 router.get("/signUp", signUp.signUpPage);
@@ -30,7 +29,13 @@ router.post("/changePassword", forgotPassword.updatePassword);
 
 const profile = require("../controllers/user/profile");
 router.get("/profile", sessionCheck, profile.page);
-router.post("/profile", sessionCheck, profile.update);
+router.post(
+  "/profile",
+  sessionCheck,
+  imageUpload.single('photo'),
+  imageProcessor.userProfilePic,
+  profile.update
+);
 
 const address = require("./../controllers/user/address");
 router.get("/addresses", sessionCheck, address.viewAll);
@@ -40,29 +45,44 @@ router.get("/addresses/changeRole", sessionCheck, address.defaultToggler);
 
 const cart = require("../controllers/user/cart");
 router.get("/cart", sessionCheck, cart.viewAll);
-router.get("/cart/addToCart/:id", sessionCheck, cart.addToCart);
-router.get("/cart/removeFromCart/:id", sessionCheck, cart.remove);
-router.get("/cart/reduceCount/:id", sessionCheck, cart.reduceCount);
-router.get("/cart/addCount/:id", sessionCheck, cart.addCount);
+router
+  .route("/cart/count")
+  .put(sessionCheck, cart.addCount)
+  .delete(sessionCheck, cart.reduceCount);
+
+router.get("/cart/addToCart/:id", sessionCheck, objectIdCheck, cart.addToCart);
+router.get(
+  "/cart/removeFromCart/:id",
+  sessionCheck,
+  objectIdCheck,
+  cart.remove
+);
 
 const checkout = require("../controllers/user/checkout");
 router
   .route("/cart/checkout")
   .get(sessionCheck, checkout.view)
   .put(sessionCheck, checkout.coupon)
-  .post(sessionCheck,checkout.checkout);
-router.post("/cart/checkout/changeDefaultAddress",sessionCheck, checkout.defaultAddress)
+  .post(sessionCheck, checkout.checkout);
+router.post(
+  "/cart/checkout/changeDefaultAddress",
+  sessionCheck,
+  checkout.defaultAddress
+);
+router.get("/cart/checkout/:id", sessionCheck, objectIdCheck, checkout.result);
 
 const wishlist = require("../controllers/user/wishlist");
-router.get("/wishlist", sessionCheck, wishlist.viewAll);
-router.get("/wishlist/addToWishlist/:id", sessionCheck, wishlist.addNew);
-router.get('/wishlist/addToCart/:id', sessionCheck, wishlist.addToCart)
-router.get("/wishlist/removeFromWishlist/:id", sessionCheck, wishlist.remove);
+router
+  .route("/wishlist")
+  .get(sessionCheck, wishlist.viewAll)
+  .patch(wishlist.addOrRemove)
+  .delete(wishlist.remove);
 
 const orders = require("../controllers/user/orders");
 router.get("/orders", sessionCheck, orders.viewAll);
+router.get("/orders/:id", sessionCheck, objectIdCheck, orders.details);
 
 const signOut = require("../controllers/user/signOut");
-router.get("/signOut", signOut.signOut);
+router.get("/signOut", sessionCheck, signOut.signOut);
 
 module.exports = router;

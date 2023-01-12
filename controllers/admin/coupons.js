@@ -1,5 +1,6 @@
 const { findById } = require("../../models/admin/details");
 const couponCLTN = require("./../../models/admin/coupons");
+const moment = require("moment");
 
 const page = async (req, res) => {
   try {
@@ -7,6 +8,7 @@ const page = async (req, res) => {
     res.render("admin/partials/coupons", {
       documentTitle: "Coupon Management",
       coupons,
+      moment,
     });
   } catch (error) {
     console.log("Error rendering coupon page: " + error);

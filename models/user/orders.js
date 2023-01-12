@@ -23,7 +23,7 @@ const orderShema = mongoose.Schema({
     country: String,
     contactNumber: Number,
   },
-  delivered: { type: Boolean, default: true },
+  delivered: { type: Boolean, default: false },
   modeOfPayment: String,
   couponUsed: { type: mongoose.Types.ObjectId, ref: "Coupon" },
   price: Number,

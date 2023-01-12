@@ -2,55 +2,62 @@
 <div class="container line-break-top line-break text-center py-3">
   <span class="shadow-heading">Customers</span>
 </div>
-<div class="container d-flex justify-content-center mx-auto row my-4">
-  <div class="col-lg-4">
-    <!-- ------------------Seach form------------------>
-    <form class="text-center d-flex">
-      <input
-        type="text"
-        name="search"
-        id=""
-        class="form-control my-2"
-        placeholder="Enter email or name"
-      />
-      <button type="submit" class="btn btn-dark mx-3 my-2 px-3 text-uppercase fw-light">Search</button>
-    </form>
-    <!-- ------------------From ends----------------------->
-  </div>
-</div>
-<div class="all-tables mt-5 d-flex flex-row justify-content-center">
-  <div class="datatable row">
-    <% if(details !=null) { %>
-    <table class="table table-bordered fw-light col-lg-9" style="min-width: 400px">
-      <tr class="bg-dark text-light">
+<div class="container my-3">
+  <% if(allCustomers !=null) { %>
+  <table class="table table-hover cell-border fw-light nowrap" id="dataTable" style="width: 100%;">
+    <thead>
+      <tr>
         <th>Name</th>
         <th>Email</th>
         <th>Mobile</th>
-        <th>Access</th>
-        <th>Action</th>
+        <th style="width: 20%">Access</th>
       </tr>
-      <% details.forEach(function(item){ %>
-      <tr class="">
+    </thead>
+    <tbody id="tableBody">
+      <% allCustomers.forEach(function(item,i){ %>
+      <tr>
         <td><%= item.name %></td>
         <td><%= item.email %></td>
         <td><%= item.number %></td>
-        <td class="text-center"><%= item.access %></td>
-        <td class="text-center">
-          <a
-            href="/admin/customer_management/changeAccess?id=<%= item._id%>&currentAccess=<%= item.access %>"
-            onclick="return confirm('Are you sure to change access of <%= item.email %>?')"
+        <td class="text-center" style="width: 20%">
+          <div id="<%=item._id%>">
+            <button
+            class="btn btn-sm btn-dark w-100"
+            onclick="changeAccess('<%=item._id%>','<%=item.access%>')"
           >
             <% if (item.access == true) {%>
-            <i class="py-1 fa fa-lock fa-lg text-danger" aria-hidden="true"></i>
+            <i
+              class="py-1 fa fa-lock-open fa-lg text-success"
+              aria-hidden="true"
+            ></i
+            ><span>Allowed</span>
             <%}else{%>
-            <i class="fa fa-lock-open fa-lg text-success" aria-hidden="true"></i
-            ><%} %>
-          </a>
+            <i class="py-1 fa fa-lock fa-lg text-danger" aria-hidden="true"></i
+            ><span>Denied</span> <%} %>
+          </button>
+          </div>
         </td>
       </tr>
       <% }) %>
-    </table>
-    <% } %>
-  </div>
+    </tbody>
+    <tfoot></tfoot>
+  </table>
+  <% } %>
 </div>
+<script>
+  function changeAccess(id, access) {
+    $.ajax({
+      url: "/admin/customer_management",
+      type: "patch",
+      data: {
+        userID: id,
+        currentAccess: access,
+      },
+      success: (res) => {
+        $("#"+id).load(location.href + " #"+id);
+      },
+    });
+  }
+</script>
+
 <%- include('../layouts/footer') %>

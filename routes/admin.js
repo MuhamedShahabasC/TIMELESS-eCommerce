@@ -1,13 +1,16 @@
 const express = require("express");
 const router = express.Router();
+const sessionCheck = require("../middlewares/admin/sessionCheck");
+const objectIdCheck = require("../middlewares/admin/objectIdCheck");
 
 const signIn = require("../controllers/admin/signIn");
-router.get("/", signIn.signInPage);
-router.post("/", signIn.adminVerification);
+router.route("/").get(signIn.page).post(signIn.verification);
 
 const customers = require("../controllers/admin/customers");
-router.get("/customer_management", customers.List);
-router.get("/customer_management/changeAccess", customers.changeAccess);
+router
+  .route("/customer_management")
+  .get(customers.viewAll)
+  .patch(customers.changeAccess);
 
 const categories = require("../controllers/admin/category");
 router.get("/categories", categories.list);
@@ -17,12 +20,13 @@ router.post("/categories/edit", categories.editCategory);
 router.get("/categories/delete_category", categories.deleteCategory);
 
 const products = require("../controllers/admin/products");
-const upload = require("../utilities/productImages");
+const upload = require("../utilities/imageUpload");
 router.get("/product_management", products.page);
 router.post(
   "/product_management/add_product",
   upload.fields([
-    { name: "heroImage", maxCount: 1 },
+    { name: "frontImage", maxCount: 1 },
+    { name: "thumbnail", maxCount: 1 },
     { name: "images", maxCount: 3 },
   ]),
   products.addProduct
@@ -46,12 +50,19 @@ router.get("/signOut", signOut.signOut);
 
 // Temp dashboard
 router.get("/dashboard", (req, res) => {
-  res.redirect('/admin/coupon_management');
+  res.redirect("/admin/coupon_management");
 });
 
-// Temp Orders
-router.get("/orders", (req, res) => {
-  res.redirect('/admin/coupon_management');
-});
+const orders = require("../controllers/admin/orders");
+router.route("/orders").get(orders.viewAll).patch(orders.deliver);
+router.get("/orders/:id", objectIdCheck, orders.details);
+
+const banner = require("../controllers/admin/banner");
+router
+  .route("/banner_management")
+  .get(banner.viewAll)
+  .post(upload.single("bannerImage"), banner.addNew)
+  .patch(banner.changeActivity)
+  .delete(banner.delete);
 
 module.exports = router;

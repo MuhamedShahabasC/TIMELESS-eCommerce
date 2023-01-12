@@ -1,4 +1,4 @@
-const signOut = (req, res) => {
+exports.signOut = (req, res) => {
   try {
     req.session.destroy();
     res.redirect("/");
@@ -7,6 +7,3 @@ const signOut = (req, res) => {
   }
 };
 
-module.exports = {
-  signOut,
-};

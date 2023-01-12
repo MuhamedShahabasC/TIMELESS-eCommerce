@@ -46,7 +46,7 @@ const editPage = async (req, res) => {
 const editCategory = async (req, res) => {
   try {
     let newCategory = req.body.name
-    newCategory = newCategory.toLowerCase();
+    newCategory = newCategory.toUpperCase();
     const duplicationCheck = await categoryCLTN.findOne({
       name: newCategory
     });

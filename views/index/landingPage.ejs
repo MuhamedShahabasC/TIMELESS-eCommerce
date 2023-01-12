@@ -20,7 +20,7 @@
     <title>TIMELESS eCommerce</title>
   </head>
   <body>
-    <header>
+    <header style="z-index: 10;">
       <div class="container-fluid header-top">
         <div class="container d-flex header-top-links justify-content-end">
           <a class="px-2 d-none d-lg-block" href="">Contact Us</a>
@@ -57,14 +57,14 @@
           <div class="collapse navbar-collapse" id="navbarText">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-items-center">
               <li class="nav-item mx-4 ms-lg-5">
-                <a class="nav-link" href="/men">Men</a>
+                <a class="nav-link" href="/categories/63a051ff7b36d782859a1e3e">Men</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/men">Women</a>
+                <a class="nav-link" href="/categories/63a0523eceb514042442b2f4">Women</a>
               </li>
             </ul>
             <span class="nav-item nav-link text-center mb-2 mb-lg-0 mx-3">
-              <a class="nav-link" href="#">Search</a>
+              <a class="nav-link" href="/products">Our Collection</a>
             </span>
             <span class="nav-item nav-link text-center mb-2 mb-lg-0 mx-3">
               <a class="nav-link" href="/users/wishlist">Wishlist</a>
@@ -115,149 +115,148 @@
       </nav>
     </header>
     <section class="container mx-auto">
-      <img
-        class="w-100 my-3 rounded"
-        src="../../public/img/design/Banner.png"
-        alt=""
-      />
+      <!-- Banner -->
+      <!-- Carousel wrapper -->
+      <%if (banners!=null){%>
+        <div
+        id="carouselVideoExample"
+        class="carousel slide carousel-fade mx-auto"
+        data-bs-ride="carousel"
+        style="position: relative;top: -6px;"
+      >
+        <!-- Inner -->
+        <div class="carousel-inner">
+          <!-- Single item -->
+          <%banners.forEach(banner => {%>
+            <div class="carousel-item active">
+              <video class="img-fluid" autoplay loop muted>
+                <source
+                  src="<%=banner.videoURL%>"
+                  type="video/mp4"
+                />
+              </video>
+              <a href="/<%=banner.url%>">
+                <div class="carousel-caption d-lg-block d-none" style="position: absolute; top: 40%;">
+                  <h3 style="text-shadow:  1px 1px #7c7c7c; font-size: 1.7rem;"><%=banner.title%></h3>
+                  <p style="text-shadow:  1px 1px #7c7c7c; font-size: 1rem;"><%=banner.description%></p>
+                </div>
+              </a>
+              <a href="/<%=banner.url%>">
+                <div class="carousel-caption d-block d-lg-none" style="position: absolute;">
+                  <h3 style="text-shadow:  1px 1px #7c7c7c; font-size: 0.8rem;"><%=banner.title%></h3>
+                  <p style="text-shadow:  1px 1px #7c7c7c; font-size: 0.5rem;"><%=banner.description%></p>
+                </div>
+              </a>
+            </div>
+            <%})%>
+        </div>
+        <!-- Inner -->
+
+        <!-- Controls -->
+        <button
+          class="carousel-control-prev"
+          type="button"
+          data-bs-target="#carouselVideoExample"
+          data-bs-slide="prev"
+        >
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button
+          class="carousel-control-next"
+          type="button"
+          data-bs-target="#carouselVideoExample"
+          data-bs-slide="next"
+        >
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+      <%}%>
+      <!-- Carousel wrapper -->
+      <!-- banner -->
+
+      <% if(newReleases != null){%>
       <div class="line-break text-center py-4">
-        <span class="shadow-heading" style="font-size: 1rem">MEN</span>
+        <span class="shadow-heading" style="font-size: 1rem">New Releases</span>
       </div>
       <div class="text-center d-flex justify-content-center flex-column my-3">
         <div class="row row-cols-1 row-cols-md-4 g-4 justify-content-center">
+          <% newReleases.forEach((product,i)=>{%>
           <div class="col">
             <div class="card h-100 border-0">
-              <a href="/products/63ac069d234bbd47340f7c43"
+              <a href="/products/<%=product._id%>"
                 ><img
-                  src="https://s3-alpha-sig.figma.com/img/b491/ca71/fcc300ae5d24c6d5916815b16bc9cd38?Expires=1673222400&Signature=YwFL9lVdxtb8DEVWWT3ddeYPZNbz29e1Lyjrt3dvF-G5fp5ZCuLVIgqBE74~9uoAlRPx9cpdZwR8qXJGd0Nd8RrebxMMthRl~bioGC80npcYzZJhSmicYyYC8J03Nx7T-3y-wgthh9YJ5RdmQ7qA-T8sMVGv6U444c8JpfJLQsMA~EK4P~8HWOPQaOqHuwZLWQknlBDkDBaMyRpKklUes0G2HnvPyz6zObxp07Jqj-aO-So-2iBHP~KxRtKw0PfYB7Cr-yZKz49sXSLuTLnw1usALcSXGW7LzzTVZYVOL5e6L7l7vK15MQheIuP7UFXDEOVnfBhUZ5rWD~xwzTq3lw__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4"
+                  src="../../public/img/products/<%=product.thumbnail%>"
                   class="card-img-top"
                   alt="..."
                 />
                 <div class="card-body">
-                  <h6 class="card-title text-black">Yatch Master</h6>
+                  <h6 class="card-title text-black"><%=product.name%></h6>
                   <span
                     style="
                       font-weight: bold;
                       color: #7f7f7f;
                       font-size: 0.75rem;
                     "
-                    >Rolex</span
+                    ><%=product.brand%></span
                   >
                 </div></a
               >
             </div>
           </div>
-          <div class="col">
-            <div class="card h-100 border-0">
-              <a href="/products/63ac01685a7e2036e0d246e7"
-                ><img
-                  src="https://s3-alpha-sig.figma.com/img/e7e9/3910/dac4d00b99b63ac3db417ea803b301e1?Expires=1673222400&Signature=AKmD9iW~PXrxx5ha6amoGfFfyQj7n0qg2zKxfDEkuiVe3d82zgRNyc~rYAJBiye5tMuJq2uTKCXc009c8Vz38GAx0El3m7aBuCouxbi5-bUc4BSQvnHgpji9TMjsYLxZfnE7p27gTpDrJAmi686z8W7Y-Qhu08hWQVFjTi7B7YitiNebTkmqoD4DvkXo5rILk5gVav08VxLuaK4HW-xSGQxg-W0i2hmvprG8MKhULpom~iqHMaGvCUFFUa35w9I5XmUrIj1PkJ9WeXsPDZ1wTUjYEpfcjPIqMOHl4ev8Xmm8o7QSR8WP3CEFUQjCHkWBixG2Hc~0r5OH96tzkoeAmQ__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4"
-                  class="card-img-top"
-                  alt="..."
-                />
-                <div class="card-body">
-                  <h6 class="card-title text-black">Cosmograph Daytona</h6>
-                  <span
-                    style="
-                      font-weight: bold;
-                      color: #7f7f7f;
-                      font-size: 0.75rem;
-                    "
-                    >Rolex</span
-                  >
-                </div></a
-              >
-            </div>
-          </div>
-          <div class="col">
-            <div class="card h-100 border-0">
-              <img
-                src="https://s3-alpha-sig.figma.com/img/850f/3b7f/48c22adef64b8a9891914b68c62d489a?Expires=1673222400&Signature=LPK8xBxH-5AIc6fQHimLx65qhpqhzS8CbNjz1wlSiWDmBYXM-UqqbTUQMHkQWRWOxVl9YvPnnekwPu9jqjHH4U2O7cWRYdefEo7vmkDkh6E7T6dVMOvQPWlWBDYHog1oMItthvCPLkoX0Me0fVMeIPVML63KYSrXXyHaBCDptC1H6rllzN0i1d32f5doXuzdjeuiDbMZ5lXgqjdAOYMmqOjBJ2s61c7Qv0W5SbKaW7X4J8kqBZILELOOQT0kfllALulVyZL5F-Yx9HWaw-FQDKO8UNzth7LkOc96wljmNo41ZlYfxtY8nca~PMDPurCQ3SbJuFr8k-a9MS6sR4TphQ__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4"
-                class="card-img-top"
-                alt="..."
-              />
-              <div class="card-body">
-                <h6 class="card-title text-black">Seamaster</h6>
-                <span
-                  style="font-weight: bold; color: #7f7f7f; font-size: 0.75rem"
-                  >Rolex</span
-                >
-              </div>
-            </div>
-          </div>
+          <%})%>
         </div>
         <span
           ><a
-            href=""
+            href="/categories/newReleases"
             class="btn btn-outline-dark py-2 px-3 mt-5"
             style="font-size: 0.75rem"
             >SHOW MORE</a
           ></span
         >
-        <img
-          class="w-75 mt-5 mb-4 mx-auto"
-          src="https://s3-alpha-sig.figma.com/img/342b/6ca8/0cac1b6aec9edfca6620a095fa535302?Expires=1673222400&Signature=mUQtPn1zymvLtiNSuGM6Z9Vf6d5icA989Wpi3YaOBiOdeXijXqa0Pe4QNVAb4dax-yn0lEWpX7OmOz3AjuIt7aUVaQtqpPH~GPktaWw8ikpRgSJyc~wA5Z~kYzRtWTu6xt~O8KEMyHaY4BfWhxv8FcXtf-q24H1uWXeFUtLD7z5~xiJtbxICYE7STW4NsD~diSss-09f5t5-5INeIT7RpxRBWO9frvGJKJbLlUenuFewgaNBRkQxHxiVQBYD1UQ6jpVvNbhU7MEHr0Cs3vPc9YZOtXJ2nOIWInR62N4Ms6~UG8a~0iJ~e33-PqIM7IfjFl7Jf6PLLk49BuuZazQNww__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4"
-          alt=""
-        />
       </div>
+      <%}%>
+      <img
+        class="w-100 my-3 rounded"
+        src="../../public/img/design/Banner.png"
+        alt=""
+      />
+
       <!-- WOMEN -->
       <div class="line-break text-center py-4">
         <span class="shadow-heading" style="font-size: 1rem">WOMEN</span>
       </div>
       <div class="text-center d-flex justify-content-center flex-column my-3">
         <div class="row row-cols-1 row-cols-md-4 g-4 justify-content-center">
+          <% women.forEach((product,i)=>{%>
           <div class="col">
             <div class="card h-100 border-0">
-              <img
-                src="https://s3-alpha-sig.figma.com/img/b491/ca71/fcc300ae5d24c6d5916815b16bc9cd38?Expires=1673222400&Signature=YwFL9lVdxtb8DEVWWT3ddeYPZNbz29e1Lyjrt3dvF-G5fp5ZCuLVIgqBE74~9uoAlRPx9cpdZwR8qXJGd0Nd8RrebxMMthRl~bioGC80npcYzZJhSmicYyYC8J03Nx7T-3y-wgthh9YJ5RdmQ7qA-T8sMVGv6U444c8JpfJLQsMA~EK4P~8HWOPQaOqHuwZLWQknlBDkDBaMyRpKklUes0G2HnvPyz6zObxp07Jqj-aO-So-2iBHP~KxRtKw0PfYB7Cr-yZKz49sXSLuTLnw1usALcSXGW7LzzTVZYVOL5e6L7l7vK15MQheIuP7UFXDEOVnfBhUZ5rWD~xwzTq3lw__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4"
-                class="card-img-top"
-                alt="..."
-              />
-              <div class="card-body">
-                <h6 class="card-title">sky - dweller</h6>
-                <span
-                  style="font-weight: bold; color: #7f7f7f; font-size: 0.75rem"
-                  >Rolex</span
-                >
-              </div>
+              <a href="/products/<%=product._id%>"
+                ><img
+                  src="../../public/img/products/<%=product.thumbnail%>"
+                  class="card-img-top"
+                  alt="..."
+                />
+                <div class="card-body">
+                  <h6 class="card-title text-black"><%=product.name%></h6>
+                  <span
+                    style="
+                      font-weight: bold;
+                      color: #7f7f7f;
+                      font-size: 0.75rem;
+                    "
+                    ><%=product.brand%></span
+                  >
+                </div></a
+              >
             </div>
           </div>
-          <div class="col">
-            <div class="card h-100 border-0">
-              <img
-                src="https://s3-alpha-sig.figma.com/img/e7e9/3910/dac4d00b99b63ac3db417ea803b301e1?Expires=1673222400&Signature=AKmD9iW~PXrxx5ha6amoGfFfyQj7n0qg2zKxfDEkuiVe3d82zgRNyc~rYAJBiye5tMuJq2uTKCXc009c8Vz38GAx0El3m7aBuCouxbi5-bUc4BSQvnHgpji9TMjsYLxZfnE7p27gTpDrJAmi686z8W7Y-Qhu08hWQVFjTi7B7YitiNebTkmqoD4DvkXo5rILk5gVav08VxLuaK4HW-xSGQxg-W0i2hmvprG8MKhULpom~iqHMaGvCUFFUa35w9I5XmUrIj1PkJ9WeXsPDZ1wTUjYEpfcjPIqMOHl4ev8Xmm8o7QSR8WP3CEFUQjCHkWBixG2Hc~0r5OH96tzkoeAmQ__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4"
-                class="card-img-top"
-                alt="..."
-              />
-              <div class="card-body">
-                <h6 class="card-title">Daytona</h6>
-                <span
-                  style="font-weight: bold; color: #7f7f7f; font-size: 0.75rem"
-                  >Rolex</span
-                >
-              </div>
-            </div>
-          </div>
-          <div class="col">
-            <div class="card h-100 border-0">
-              <img
-                src="https://s3-alpha-sig.figma.com/img/850f/3b7f/48c22adef64b8a9891914b68c62d489a?Expires=1673222400&Signature=LPK8xBxH-5AIc6fQHimLx65qhpqhzS8CbNjz1wlSiWDmBYXM-UqqbTUQMHkQWRWOxVl9YvPnnekwPu9jqjHH4U2O7cWRYdefEo7vmkDkh6E7T6dVMOvQPWlWBDYHog1oMItthvCPLkoX0Me0fVMeIPVML63KYSrXXyHaBCDptC1H6rllzN0i1d32f5doXuzdjeuiDbMZ5lXgqjdAOYMmqOjBJ2s61c7Qv0W5SbKaW7X4J8kqBZILELOOQT0kfllALulVyZL5F-Yx9HWaw-FQDKO8UNzth7LkOc96wljmNo41ZlYfxtY8nca~PMDPurCQ3SbJuFr8k-a9MS6sR4TphQ__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4"
-                class="card-img-top"
-                alt="..."
-              />
-              <div class="card-body">
-                <h6 class="card-title">Seamaster</h6>
-                <span
-                  style="font-weight: bold; color: #7f7f7f; font-size: 0.75rem"
-                  >Rolex</span
-                >
-              </div>
-            </div>
-          </div>
+          <%})%>
         </div>
         <span
           ><a
-            href=""
+            href="/categories/63a0523eceb514042442b2f4"
             class="btn btn-outline-dark py-2 px-3 mt-5"
             style="font-size: 0.75rem"
             >SHOW MORE</a
@@ -265,12 +264,50 @@
         >
         <img
           class="w-75 mt-5 mb-4 mx-auto"
-          src="https://s3-alpha-sig.figma.com/img/dd17/bd14/5f65e001c412c7ec8ebbeeacc856f243?Expires=1673222400&Signature=A9aFnNTdaM4jeKE41-koItkyPm12EqyD~yvmfYEWEHNYmdwXHWO~7pIoDtpTzKwe5WYDm~aj3f2udwtJ2dCqcPxmDJ4N~F23GlP6VrLtbCH87f8t7rWwbEaQ72JF-L5ICCTwfzVvsAcRpBj3iWAmi5GSA0nMufLymDl7ZcfijtPEHPupEiL9PtQGqGP~~uR4QTWlHPTX8IUR9Ib9DydnBwJvtnTkFWYsmm6rrGwN5ckC0v6C0zLR6ZhMxe2H5ws8JUA9yLXN9k5lMq99VBCW2J19Gahe8DDYYtjJmYgKhGYBvMws0ukHq5TythMoJzrSQVqgmWILk1QJfcgNvE3Rqg__&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4"
+          src="/public/img/design/distributors.png"
           alt=""
         />
       </div>
+      <div class="line-break text-center py-4">
+        <span class="shadow-heading" style="font-size: 1rem">MEN</span>
+      </div>
+      <div class="text-center d-flex justify-content-center flex-column my-3">
+        <div class="row row-cols-1 row-cols-md-4 g-4 justify-content-center">
+          <% men.forEach((product,i)=>{%>
+          <div class="col">
+            <div class="card h-100 border-0">
+              <a href="/products/<%=product._id%>"
+                ><img
+                  src="../../public/img/products/<%=product.thumbnail%>"
+                  class="card-img-top"
+                  alt="..."
+                />
+                <div class="card-body">
+                  <h6 class="card-title text-black"><%=product.name%></h6>
+                  <span
+                    style="
+                      font-weight: bold;
+                      color: #7f7f7f;
+                      font-size: 0.75rem;
+                    "
+                    ><%=product.brand%></span
+                  >
+                </div></a
+              >
+            </div>
+          </div>
+          <%})%>
+        </div>
+        <span
+          ><a
+            href="/categories/63a051ff7b36d782859a1e3e"
+            class="btn btn-outline-dark py-2 px-3 my-3"
+            style="font-size: 0.75rem"
+            >SHOW MORE</a
+          ></span
+        >
+      </div>
     </section>
-
     <footer class="bg-theme">
       <div
         class="container links pt-4 pb-2 row mx-auto line-break d-flex justify-content-around"
@@ -301,6 +338,6 @@
       crossorigin="anonymous"
     ></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   </body>
 </html>

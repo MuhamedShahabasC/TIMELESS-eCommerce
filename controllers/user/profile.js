@@ -36,7 +36,11 @@ const update = async (req, res) => {
   try {
     const userID = req.session.userID;
     const newName = req.body.name;
-    await UserCLTN.findByIdAndUpdate(userID, { name: newName });
+    const filteredBody = { name: newName };
+    if (req.file) {
+      filteredBody.photo = req.file.filename;
+    }
+    await UserCLTN.findByIdAndUpdate(userID, filteredBody);
     res.redirect("/users/profile");
   } catch (error) {
     console.log("Error updating user details: " + error);

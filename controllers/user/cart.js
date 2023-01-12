@@ -1,6 +1,7 @@
 const { default: mongoose } = require("mongoose");
 const cartCLTN = require("../../models/user/cart");
 const productCLTN = require("../../models/admin/product");
+const wishlistCLTN = require("../../models/user/wishlist");
 
 exports.viewAll = async (req, res) => {
   try {
@@ -18,6 +19,17 @@ exports.viewAll = async (req, res) => {
 
 exports.addToCart = async (req, res) => {
   try {
+    const wishlistCheck = await wishlistCLTN.findOne({
+      customer: req.session.userID,
+      products: mongoose.Types.ObjectId(req.params.id),
+    });
+    if (wishlistCheck) {
+      await wishlistCLTN.findByIdAndUpdate(wishlistCheck._id, {
+        $pull: {
+          products: req.params.id,
+        },
+      });
+    }
     const userCart = await cartCLTN.findOne({ user: req.session.userID });
     const product = await productCLTN.findById(req.params.id);
     const productExist = await cartCLTN.findOne({
@@ -103,13 +115,12 @@ exports.remove = async (req, res) => {
 
 exports.addCount = async (req, res) => {
   try {
-    const userCart = await cartCLTN.findOne({ user: req.session.userID });
-    const product = await productCLTN.findById(req.params.id);
-    await cartCLTN.updateOne(
+    const product = await productCLTN.findById(req.body.id);
+    const count = await cartCLTN.findOneAndUpdate(
       {
-        _id: userCart._id,
+        customer: req.session.userID,
         products: {
-          $elemMatch: { name: mongoose.Types.ObjectId(req.params.id) },
+          $elemMatch: { name: mongoose.Types.ObjectId(req.body.id) },
         },
       },
       {
@@ -121,7 +132,22 @@ exports.addCount = async (req, res) => {
         },
       }
     );
-    res.redirect("/users/cart");
+
+    const userCart = await cartCLTN.findOne({
+      customer: req.session.userID,
+    });
+    const allProducts = await userCart.products;
+    const currentProduct = allProducts.find((el, i) => {
+      if (el.name.valueOf() == req.body.id) {
+        return el;
+      }
+    });
+    res.json({
+      data: {
+        currentProduct,
+        userCart,
+      },
+    });
   } catch (error) {
     console.log("Error adding count in cart: " + error);
   }
@@ -129,7 +155,7 @@ exports.addCount = async (req, res) => {
 
 exports.reduceCount = async (req, res) => {
   try {
-    const product = await productCLTN.findById(req.params.id);
+    const product = await productCLTN.findById(req.body.id);
     const currentItem = await cartCLTN.aggregate([
       {
         $match: {
@@ -147,11 +173,11 @@ exports.reduceCount = async (req, res) => {
     ]);
     const totalQtyPerItem = currentItem[0].products.quantity;
     if (totalQtyPerItem > 1) {
-      await cartCLTN.updateOne(
+      const count = await cartCLTN.findOneAndUpdate(
         {
           _id: currentItem[0]._id,
           products: {
-            $elemMatch: { name: mongoose.Types.ObjectId(req.params.id) },
+            $elemMatch: { name: mongoose.Types.ObjectId(req.body.id) },
           },
         },
         {
@@ -164,7 +190,21 @@ exports.reduceCount = async (req, res) => {
         }
       );
     }
-    res.redirect("/users/cart");
+    const userCart = await cartCLTN.findOne({
+      customer: req.session.userID,
+    });
+    const allProducts = await userCart.products;
+    const currentProduct = allProducts.find((el, i) => {
+      if (el.name.valueOf() == req.body.id) {
+        return el;
+      }
+    });
+    res.json({
+      data: {
+        currentProduct,
+        userCart,
+      },
+    });
   } catch (error) {
     console.log("Error reducing count from cart: " + error);
   }

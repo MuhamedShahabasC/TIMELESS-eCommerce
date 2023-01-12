@@ -1,4 +1,5 @@
 const { default: mongoose } = require("mongoose");
+const sharp = require("sharp");
 const { findById } = require("../../models/admin/category");
 const categoriesCLTN = require("../../models/admin/category");
 const productCLTN = require("../../models/admin/product");
@@ -19,14 +20,29 @@ const page = async (req, res) => {
 
 const addProduct = async (req, res) => {
   try {
-    const newImages = [
-      req.files.images[0].filename,
-      req.files.images[1].filename,
-      req.files.images[2].filename,
-    ];
+    let frontImage = `${req.body.name}_frontImage_${Date.now()}.png`;
+    sharp(req.files.frontImage[0].buffer)
+      .toFormat("png")
+      .png({ quality: 80 })
+      .toFile(`public/img/products/${frontImage}`);
+    let thumbnail = `${req.body.name}_thumbnail_${Date.now()}.png`;
+    sharp(req.files.thumbnail[0].buffer)
+      .toFormat("png")
+      .png({ quality: 80 })
+      .toFile(`public/img/products/${thumbnail}`);
+    const newImages = [];
+    for (i = 0; i < 3; i++) {
+      imageName = `${req.body.name}_image${i}_${Date.now()}.png`;
+      sharp(req.files.images[i].buffer)
+        .toFormat("png")
+        .png({ quality: 80 })
+        .toFile(`public/img/products/${imageName}`);
+      newImages.push(imageName);
+    }
     const newProduct = new productCLTN({
       name: req.body.name,
-      heroImage: req.files.heroImage[0].filename,
+      frontImage: frontImage,
+      thumbnail: thumbnail,
       category: mongoose.Types.ObjectId(req.body.categoryID),
       images: newImages,
       brand: req.body.brand,

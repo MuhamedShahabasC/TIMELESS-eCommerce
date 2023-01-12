@@ -47,7 +47,11 @@ const productSchema = new mongoose.Schema({
     type: String,
     require,
   },
-  heroImage: {
+  thumbnail: {
+    type: String,
+    require,
+  },
+  frontImage: {
     type: String,
     require,
   },

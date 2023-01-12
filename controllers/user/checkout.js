@@ -1,8 +1,16 @@
-const { default: mongoose } = require("mongoose");
+const { default: mongoose, mongo, Mongoose } = require("mongoose");
 const cartCLTN = require("../../models/user/cart");
 const userCLTN = require("../../models/user/details");
 const couponCLTN = require("../../models/admin/coupons");
 const orderCLTN = require("../../models/user/orders");
+const paypal = require("paypal-rest-sdk");
+
+// Paypal Configuration
+paypal.configure({
+  mode: "sandbox", //sandbox or live
+  client_id: process.env.PAYPAL_CLIENTID,
+  client_secret: process.env.PAYPAL_SECRET,
+});
 
 exports.view = async (req, res) => {
   try {
@@ -85,12 +93,36 @@ exports.coupon = async (req, res) => {
       let discountPrice = 0;
       let finalPrice = cartPrice;
       if (coupon) {
-        discountPercentage = coupon.discount;
-        discountPrice = (discountPercentage / 100) * cartPrice;
-        finalPrice = cartPrice - discountPrice;
-        couponCheck =
-          '<b>Coupon Applied <i class="fa fa-check text-success" aria-hidden="true"></i></b></br>' +
-          coupon.name;
+        const alreadyUsedCoupon = await userCLTN.findOne({
+          _id: req.session.userID,
+          couponsUsed: coupon._id,
+        });
+        if (!alreadyUsedCoupon) {
+          if (coupon.active == true) {
+            const currentTime = new Date().toJSON();
+            if (currentTime > coupon.startingDate.toJSON()) {
+              if (currentTime < coupon.expiryDate.toJSON()) {
+                discountPercentage = coupon.discount;
+                discountPrice = (discountPercentage / 100) * cartPrice;
+                finalPrice = cartPrice - discountPrice;
+                couponCheck =
+                  '<b>Coupon Applied <i class="fa fa-check text-success" aria-hidden="true"></i></b></br>' +
+                  coupon.name;
+              } else {
+                couponCheck =
+                  "<b style='font-size:0.75rem; color: red'>Coupon expired<i class='fa fa-stopwatch'></i></b>";
+              }
+            } else {
+              couponCheck = `<b style='font-size:0.75rem; color: green'>Coupon starts on </b><br/><p style="font-size:0.75rem;">${coupon.startingDate}</p>`;
+            }
+          } else {
+            couponCheck =
+              "<b style='font-size:0.75rem; color: red'>Invalid Coupon !</i></b>";
+          }
+        } else {
+          couponCheck =
+            "<b style='font-size:0.75rem; color: grey'>Coupon already used !</i></b>";
+        }
       } else {
         couponCheck = "<b style='font-size:0.75rem'>Coupon not found</b>";
       }
@@ -126,6 +158,8 @@ exports.defaultAddress = async (req, res) => {
   }
 };
 
+let orderDetails;
+let couponUsed;
 exports.checkout = async (req, res) => {
   try {
     // Shipping Address
@@ -147,14 +181,28 @@ exports.checkout = async (req, res) => {
     shippingAddress = shippingAddress[0].addresses;
 
     // Coupon used if any
-    let couponUsed = await couponCLTN.findOne({
+    couponUsed = await couponCLTN.findOne({
       code: req.body.couponCode,
+      active: true,
     });
+
     if (couponUsed) {
-      couponUsed = couponUsed._id;
+      const currentTime = new Date().toJSON();
+      if (currentTime > couponUsed.startingDate.toJSON()) {
+        if (currentTime < couponUsed.expiryDate.toJSON()) {
+          couponUsed = couponUsed._id;
+        } else {
+          req.body.couponDiscount = 0;
+        }
+      } else {
+        req.body.couponDiscount = 0;
+      }
+    } else {
+      req.body.couponDiscount = 0;
     }
     if (!req.body.couponDiscount) {
       req.body.couponDiscount = 0;
+      couponUsed = null;
     }
 
     // Cart summary
@@ -181,42 +229,111 @@ exports.checkout = async (req, res) => {
     });
 
     // Creating order
-    if (req.body.paymentMethod == "COD") {
-      const orderDetails = new orderCLTN({
-        customer: req.session.userID,
-        shippingAddress: {
-          building: shippingAddress.building,
-          address: shippingAddress.address,
-          pincode: shippingAddress.pincode,
-          country: shippingAddress.country,
-          contactNumber: shippingAddress.contactNumber,
+
+    orderDetails = new orderCLTN({
+      customer: req.session.userID,
+      shippingAddress: {
+        building: shippingAddress.building,
+        address: shippingAddress.address,
+        pincode: shippingAddress.pincode,
+        country: shippingAddress.country,
+        contactNumber: shippingAddress.contactNumber,
+      },
+      modeOfPayment: req.body.paymentMethod,
+      couponUsed: couponUsed,
+      summary: orderSummary,
+      totalQuantity: userCart.totalQuantity,
+      price: userCart.totalPrice,
+      finalPrice: req.body.finalPrice,
+      discountPrice: req.body.couponDiscount,
+    });
+    if (req.body.paymentMethod === "COD") {
+      req.session.payment = orderDetails._id;
+      res.redirect("/users/cart/checkout/" + orderDetails._id);
+    } else if (req.body.paymentMethod === "PayPal") {
+      req.session.payment = orderDetails._id;
+      const create_payment_json = {
+        intent: "sale",
+        payer: {
+          payment_method: "paypal",
         },
-        modeOfPayment: req.body.paymentMethod,
-        couponUsed: couponUsed,
-        summary: orderSummary,
-        totalQuantity: userCart.totalQuantity,
-        price: userCart.totalPrice,
-        finalPrice: req.body.finalPrice,
-        discountPrice: req.body.couponDiscount,
-      });
-      await userCLTN.findByIdAndUpdate(req.session.userID, {
-        $push: {
-          orders: [mongoose.Types.ObjectId(req.params.id)],
-          couponsUsed: [mongoose.Types.ObjectId(couponUsed)],
+        redirect_urls: {
+          return_url: `http://localhost:8080/users/cart/checkout/${orderDetails._id}`,
+          cancel_url: "http://localhost:8080/users/cart/checkout",
         },
-      });
-      await cartCLTN.findOneAndUpdate(
-        {
-          customer: req.session.userID,
-        },
-        {
-          $set: { products: [], totalPrice: 0, totalQuantity: 0 },
+        transactions: [
+          {
+            item_list: {
+              items: [
+                {
+                  name: `Order Number-${orderDetails._id}`,
+                  sku: `Order Number-${orderDetails._id}`,
+                  price: orderDetails.finalPrice,
+                  currency: "USD",
+                  quantity: 1,
+                },
+              ],
+            },
+            amount: {
+              currency: "USD",
+              total: orderDetails.finalPrice,
+            },
+            description: "TIMELESS eCommerce",
+          },
+        ],
+      };
+      paypal.payment.create(
+        create_payment_json,
+        async function (error, payment) {
+          if (error) {
+            throw error;
+          } else {
+            for (let i = 0; i < payment.links.length; i++) {
+              if (payment.links[i].rel === "approval_url") {
+                res.redirect(payment.links[i].href);
+              }
+            }
+          }
         }
       );
-      await orderDetails.save();
-      res.redirect("/users/orders");
     }
   } catch (error) {
     console.log("Error checking out: " + error);
+  }
+};
+
+exports.result = async (req, res) => {
+  if (req.session.payment == orderDetails._id) {
+    orderDetails.save();
+    if (couponUsed) {
+      await userCLTN.findByIdAndUpdate(req.session.userID, {
+        $push: {
+          orders: [mongoose.Types.ObjectId(orderDetails)],
+          couponsUsed: [couponUsed],
+        },
+      });
+    } else {
+      await userCLTN.findByIdAndUpdate(req.session.userID, {
+        $push: {
+          orders: [mongoose.Types.ObjectId(orderDetails)],
+        },
+      });
+    }
+    await cartCLTN.findOneAndUpdate(
+      {
+        customer: req.session.userID,
+      },
+      {
+        $set: { products: [], totalPrice: 0, totalQuantity: 0 },
+      }
+    );
+    const orderResult = "Order Placed";
+    res.render("user/profile/partials/orderResult", {
+      documentTitle: orderResult,
+      orderID: orderDetails._id,
+    });
+    req.session.payment = false;
+  } else {
+    res.redirect("/users/cart/checkout");
   }
 };

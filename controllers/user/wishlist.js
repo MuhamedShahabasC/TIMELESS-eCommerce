@@ -16,54 +16,74 @@ exports.viewAll = async (req, res) => {
   }
 };
 
-exports.addNew = async (req, res) => {
-  const userWishlist = await wishlistCLTN.findOne({
-    customer: req.session.userID,
-  });
-  const product = await productCLTN.findById(req.params.id);
-  const productExist = await wishlistCLTN.findOne({
-    _id: userWishlist._id,
-    products: req.params.id,
-  });
-  if (productExist) {
-    res.redirect("/products/" + product._id);
-  } else {
-    await wishlistCLTN.findByIdAndUpdate(userWishlist._id, {
-      $push: {
-        products: [req.params.id],
-      },
+exports.addOrRemove = async (req, res) => {
+  try {
+    const userWishlist = await wishlistCLTN.findOne({
+      customer: req.session.userID,
     });
-    res.redirect("/products/" + product._id);
+    if (userWishlist) {
+      const product = await productCLTN.findById(req.body.id);
+      const productExist = await wishlistCLTN.findOne({
+        _id: userWishlist._id,
+        products: req.body.id,
+      });
+      if (!productExist) {
+        await wishlistCLTN.findByIdAndUpdate(userWishlist._id, {
+          $push: {
+            products: [req.body.id],
+          },
+        });
+        res.json({
+          data: {
+            message: 1,
+          },
+        });
+      } else {
+        await wishlistCLTN.updateOne(
+          {
+            _id: userWishlist._id,
+          },
+          {
+            $pull: {
+              products: req.body.id,
+            },
+          }
+        );
+        res.json({
+          data: {
+            message: 0,
+          },
+        });
+      }
+    } else {
+      res.json({
+        data: {
+          message: null,
+        },
+      });
+    }
+  } catch (error) {
+    console.log("Error adding or removing from wishlist: " + error);
   }
-};
-
-exports.addToCart = async (req, res) => {
-  const userWishlist = await wishlistCLTN.findOne({
-    customer: req.session.userID,
-  });
-  const product = await productCLTN.findById(req.params.id);
-  await wishlistCLTN.findByIdAndUpdate(userWishlist._id, {
-    $pull: {
-      products: req.params.id,
-    },
-  });
-  res.redirect("/users/cart/addToCart/" + req.params.id);
 };
 
 exports.remove = async (req, res) => {
   const userWishlist = await wishlistCLTN.findOne({
     customer: req.session.userID,
   });
-  const product = await productCLTN.findById(req.params.id);
   await wishlistCLTN.updateOne(
     {
       _id: userWishlist._id,
     },
     {
       $pull: {
-        products: req.params.id,
+        products: req.body.productID,
       },
     }
   );
-  res.redirect("/products/" + product._id);
+  res.json({
+    data: {
+      deleted: 1,
+    },
+  });
 };

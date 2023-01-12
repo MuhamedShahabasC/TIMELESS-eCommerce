@@ -1,4 +1,4 @@
-const signInPage = (req, res) => {
+exports.page = (req, res) => {
   try {
     res.render("admin/partials/signIn", {
       documentTitle: "Admin Sign In",
@@ -10,7 +10,7 @@ const signInPage = (req, res) => {
 
 const adminCLTN = require("../../models/admin/details");
 const bcrypt = require("bcrypt");
-const adminVerification = async (req, res) => {
+exports.verification = async (req, res) => {
   try {
     const inputEmail = req.body.email;
     const inputPassword = req.body.password;
@@ -39,9 +39,4 @@ const adminVerification = async (req, res) => {
   } catch (error) {
     console.log("Error signing in admin: " + error);
   }
-};
-
-module.exports = {
-  adminVerification,
-  signInPage,
 };

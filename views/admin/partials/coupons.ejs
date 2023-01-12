@@ -1,59 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css"
-      rel="stylesheet"
-    />
-    <link rel="preconnect" href="https://rsms.me/" />
-    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
-    <link
-      rel="stylesheet"
-      href="https://use.fontawesome.com/releases/v5.0.7/css/all.css"
-    />
-    <link rel="stylesheet" href="/public/stylesheets/tableStyle.css" />
-    <title><%= locals.documentTitle %></title>
-  </head>
-  <body>
-    <header>
-      <div class="container-fluid header-top">
-        <div
-          class="container px-3 d-flex header-top-links justify-content-around"
-        >
-          <a class="px-3" href="/">Homepage</a>
-          <div class="d-none d-lg-block">
-            <span class="d-flex align-items-center">
-              <i class="fab fa-instagram"></i>
-              <i class="fab fa-facebook-f"></i>
-              <i class="fab fa-twitter"></i>
-              <i class="fab fa-whatsapp"></i>
-            </span>
-          </div>
-        </div>
-      </div>
-      <nav
-        class="container navbar navbar-expand-lg bg-white py-3 px-2 line-break"
-      >
-        <div class="container-fluid justify-content-around">
-          <a class="navbar-brand d-flex align-items-center" href="/">
-            <img
-              src="/public/img/timeless-logo.png"
-              alt="Logo"
-              width="40"
-              height="40"
-              class="d-inline-block align-text-top"
-            />
-            <div class="brand-name ms-3">
-              <span>TIMELESS</span>
-            </div>
-          </a>
-        </div>
-      </nav>
-    </header>
-    <section>
+<%- include('../layouts/header') %>
       <%- include('../layouts/head-links') %>
       <div class="container line-break text-center py-3">
         <span class="shadow-heading" style="text-transform: uppercase;">Coupons</span>
@@ -173,44 +118,33 @@
       <!-- Responsive data table -->
       
       <div class="card-body container">
-        <table id="datatablesSimple">
+        <table id="dataTable" class="table table-hover cell-border fw-light nowrap">
           <thead>
             <tr>
+              <th>No.</th>
               <th>Name</th>
               <th>Code</th>
               <th>Discount</th>
               <th>Starting Date</th>
               <th>Expiry Date</th>
-              <th>Active</th>
-              <th>Action</th>
+              <th>Activity</th>
             </tr>
           </thead>
-          <tfoot>
-            <tr>
-                <th>Name</th>
-                <th>Code</th>
-                <th>Discount</th>
-                <th>Starting Date</th>
-                <th>Expiry Date</th>
-                <th>Active</th>
-                <th>Action</th>
-            </tr>
-          </tfoot>
           <% if(coupons !=null){ %>
           <tbody>
-            <% coupons.forEach(function(item){ %>
+            <% coupons.forEach(function(item,i){ %>
             <tr>
+              <td><%= i+1 %></td>
               <td><%= item.name %></td>
               <td><%= item.code %></td>
               <td><%= item.discount %>%</td>
-              <td><%= item.startingDate %></td>
-              <td><%= item.expiryDate %></td>
-              <td><%= item.active %></td>
+              <td><%= moment(item.startingDate).format('ll')  %></td>
+              <td><%= moment(item.expiryDate).format('ll') %></td>
               <td class="text-center d-flex flex-column">
                 <% if(item.active==true){ %> 
-                <a href="/admin/coupon_management/changeActivity?id=<%= item._id %>" onclick="return confirm('Proceed to change of <%= item.name %> ?')" class="btn btn-danger text-white btn-sm  my-1">Deactivate</a>
+                <a href="/admin/coupon_management/changeActivity?id=<%= item._id %>" onclick="return confirm('Proceed to change of <%= item.name %> ?')" class="btn btn-success text-white btn-sm  my-1">Active</a>
               <% }else{ %>
-                <a href="/admin/coupon_management/changeActivity?id=<%= item._id %>" onclick="return confirm('Proceed to change of <%= item.name %> ?')" class="btn btn-success text-white btn-sm my-1">Reactivate</a>
+                <a href="/admin/coupon_management/changeActivity?id=<%= item._id %>" onclick="return confirm('Proceed to change of <%= item.name %> ?')" class="btn btn-danger text-white btn-sm my-1">In-active</a>
                 <% } %></td>
             </tr>
             <% }) %>
@@ -218,33 +152,5 @@
           <% } %>
         </table>
       </div>
-    </section>
-    <footer class="bg-theme">
-      <div
-        class="container links pt-4 pb-2 row mx-auto line-break d-flex justify-content-around"
-      >
-        <a class="col-lg-3 pb-2 text-center" href="#">Track Shipping</a>
-        <a class="col-lg-3 pb-2 text-center" href="#">Contact Us</a>
-        <a class="col-lg-3 pb-2 text-center" href="#">Customer Care</a>
-        <a class="col-lg-3 pb-2 text-center" href="#">About us</a>
-      </div>
-      <div class="copyright bg-theme py-2 text-center">
-        <span>Copyright © 2022 | Timeless</span>
-      </div>
-    </footer>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="/public/javascript/js/scripts.js"></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/simple-datatables@latest"
-      crossorigin="anonymous"
-    ></script>
-    <script>
-      window.addEventListener("DOMContentLoaded", (event) => {
-        const datatablesSimple = document.getElementById("datatablesSimple");
-        if (datatablesSimple) {
-          new simpleDatatables.DataTable(datatablesSimple);
-        }
-      });
-    </script>
-  </body>
-</html>
+
+      <%- include('../layouts/footer') %>

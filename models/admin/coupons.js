@@ -16,3 +16,4 @@ const couponSchema = new mongoose.Schema(
 
 const couponCLTN = mongoose.model("Coupon", couponSchema);
 module.exports = couponCLTN;
+

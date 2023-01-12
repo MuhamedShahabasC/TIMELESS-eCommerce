@@ -1,5 +1,6 @@
 <%- include('../layouts/header') %> <%- include('../layouts/user-links') %>
 
+
 <div class="container mx-auto">
   <div class="line-break text-center py-4">
     <span class="shadow-heading">Your Cart</span>
@@ -7,17 +8,17 @@
   <div class="row justify-content-center m-3">
     <div class="col-lg-6">
       <% if(userCart!= null && userCart.products.length!= 0){%> <%
-      userCart.products.forEach((product) => {%>
-      <div class="d-flex rounded my-2 p-3" style="border: 1px solid #dbdbdb">
-        <div class="prod-img">
+      userCart.products.forEach((product,i) => {%>
+      <div class="row d-flex rounded my-2 p-3" style="border: 1px solid #dbdbdb">
+        <div class="col-lg-4 prod-img">
           <img
-            src="../../../../public/img/products/<%=product.name.heroImage%>"
+            src="../../../../public/img/products/<%=product.name.thumbnail%>"
             alt=""
             height="150px"
           />
         </div>
         <div
-          class="prod-details d-flex flex-grow-1 flex-column justify-content-between"
+          class="col-lg-8 prod-details d-flex flex-grow-1 flex-column justify-content-between"
         >
           <h5><%=product.name.name%></h5>
           <h6 class="text-secondary"><%=product.name.brand%></h6>
@@ -28,22 +29,62 @@
           >
           <div class="d-flex justify-content-end mt-2">
             <div class="counter d-flex p-1 align-items-center rounded mx-4">
-              <a href="cart/addCount/<%=product.name._id%>"
-                ><i class="fa fa-plus" X></i
-              ></a>
-              <span class="fw-bold px-2"><%=product.quantity%></span>
-              <a
-                href="cart/reduceCount/<%=product.name._id%>"
-                <%if(product.quantity == 1){%>style="pointer-events: none;" class="text-danger"<%}%>
-                ><i class="fa fa-minus"></i
-              ></a>
+              <button
+                class="btn btn-sm btn-light"
+                onclick='addCount("<%=product.name._id%>","<%=i%>")'
+              >
+                <i class="fa fa-plus"></i>
+              </button>
+              <span id="cartCount<%=i%>" class="fw-bold px-2"
+                ><%=product.quantity%></span
+              >
+
+              <script>
+                function addCount(productID, i) {
+                  $.ajax({
+                    url: "/users/cart/count",
+                    method: "put",
+                    data: { id: productID },
+                    success: (res) => {
+                      $(`#cartCount${i}`).html(
+                        res.data.currentProduct.quantity
+                      );
+                      $(`#totalItems`).html(res.data.userCart.totalQuantity);
+                      $(`#totalPrice`).html("₹ " + res.data.userCart.totalPrice);
+                    },
+                  });
+                }
+              </script>
+
+              <button
+                class="btn btn-sm btn-light"
+                onclick='reduceCount("<%=product.name._id%>","<%=i%>")'
+              >
+                <i class="fa fa-minus"></i>
+              </button>
             </div>
-            <a
+            <div class="d-flex align-items-center">
+              <a
               onclick="return confirm('Proceed to remove <%=product.name.name%>')"
               href="/users/cart/removeFromCart/<%=product.name._id%>"
-              class="btn btn-secondary btn-sm text-white"
+              class="btn btn-secondary btn-sm text-white "
               >Remove</a
             >
+            </div>
+            <script>
+              function reduceCount(productID, i) {
+                $.ajax({
+                  url: "/users/cart/count",
+                  method: "delete",
+                  data: { id: productID },
+                  success: (res) => {
+                    $(`#cartCount${i}`).html(res.data.currentProduct.quantity);
+                    $(`#totalItems`).html(res.data.userCart.totalQuantity);
+                    $(`#totalPrice`).html("₹ " + res.data.userCart.totalPrice);
+                  },
+                });
+              }
+            </script>
           </div>
         </div>
       </div>
@@ -54,36 +95,39 @@
         class="order-summary rounded p-3 my-3 d-flex flex-column"
         style="border: 1px solid #dbdbdb; font-size: 0.9rem"
       >
-      <div class="d-flex justify-content-between p-1">
-        <span>Total items:</span>
-        <span><%=userCart.totalQuantity%></span>
-      </div>
+        <div class="d-flex justify-content-between p-1">
+          <span>Total items:</span>
+          <span id="totalItems"><%=userCart.totalQuantity%></span>
+        </div>
         <div class="d-flex justify-content-between p-1">
           <span>Products:</span>
-          <span><%=userCart.products.length%></span>
+          <span id="totalProducts"><%=userCart.products.length%></span>
         </div>
         <div class="d-flex justify-content-between p-1">
           <span>Price:</span>
-          <span>₹ <%=userCart.totalPrice%></span>
+          <span id="totalPrice">₹ <%=userCart.totalPrice%></span>
         </div>
       </div>
       <div
         class="order-summary rounded p-3 my-3 d-flex flex-column"
         style="border: 1px solid #dbdbdb; font-size: 0.9rem"
       >
-        <a href="/users/cart/checkout" type="submit" class="text-white btn btn-dark btn-sm"
+        <a
+          href="/users/cart/checkout"
+          type="submit"
+          class="text-white btn btn-dark btn-sm"
           >Proceed to checkout</a
         >
       </div>
-    </div>
-    <%}else{%>
-    <h4 class="text-center my-4 fw-light">No products on your cart yet.</h4>
-    <div class="text-center my-4 fw-bold">
-      <a href="/" class="text-decoration-underline fst-italic"
-        >Continue shopping <i class="fa fa-arrow-right"></i
-      ></a>
-    </div>
-    <%}%>
+      <%}else{%>
+        <h4 class="text-center my-4 fw-light">No products on your cart yet.</h4>
+        <div class="text-center my-4 fw-bold">
+          <a href="/" class="text-decoration-underline fst-italic"
+          >Continue shopping <i class="fa fa-arrow-right"></i
+            ></a>
+          </div>
+          <%}%>
+        </div>
   </div>
 </div>
 

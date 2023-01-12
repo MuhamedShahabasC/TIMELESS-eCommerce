@@ -34,6 +34,10 @@
       .heroIMG {
         border: 1px solid white;
       }
+      .swal2-popup {
+  font-size: 0.85rem !important;
+}
+
     </style>
   </head>
   <body>
@@ -74,14 +78,14 @@
           <div class="collapse navbar-collapse" id="navbarText">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-items-center">
               <li class="nav-item mx-4 ms-lg-5">
-                <a class="nav-link" href="/men">Men</a>
+                <a class="nav-link" href="/categories/63a051ff7b36d782859a1e3e">Men</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="/men">Women</a>
+                <a class="nav-link" href="/categories/63a0523eceb514042442b2f4">Women</a>
               </li>
             </ul>
             <span class="nav-item nav-link text-center mb-2 mb-lg-0 mx-3">
-              <a class="nav-link" href="#">Search</a>
+              <a class="nav-link" href="/products">Our Collection</a>
             </span>
             <span class="nav-item nav-link text-center mb-2 mb-lg-0 mx-3">
               <a class="nav-link" href="/users/wishlist">Wishlist</a>
@@ -135,31 +139,68 @@
     <section>
         <div class="brand-BG container d-flex flex-column align-items-center">
           <img
-            src="/public/img/design/productPage/brandBG/<%=productDetails.brand%>.jpg"
+            src="/public/img/design/productPage/brandBG/<%=productDetails.color%>.png"
             alt=""
             width="100%"
             class="rounded mt-3"
           />
           <div
-            class="product-details rounded d-flex justify-content-around my-3 py-5 px-5"
+            class="product-details rounded row justify-content-around my-3 py-5 px-5"
           >
-            <div class="heroIMG rounded w-50">
               <img
-                src="/public/img/products/<%=productDetails.heroImage%>"
+                src="/public/img/products/<%=productDetails.frontImage%>"
                 alt=""
+                
                 width="100%"
+                class="heroIMG rounded col-lg-5"
               />
-            </div>
-            <div class="product-title w-50 mx-3 p-2 text-white d-flex flex-column justify-content-around">
+            <div class="product-title col-lg-5 mx-3 p-2 text-white d-flex flex-column justify-content-around">
               <div class="brand-fav d-flex justify-content-between">
                 <h6 class="fw-bold"><%=productDetails.brand%></h6>
                 
-                <% if(productExistInWishlist==null){%>
-                  <a href="/users/wishlist/addToWishlist/<%=productDetails._id%>"><i class="fa fa-heart text-white"></i></a>
-                  <%}else{%>
-                    <a href="/users/wishlist/removeFromWishlist/<%=productDetails._id%>"><i class="fa fa-heart text-danger"></i></a>
-                     <%}%>
-                
+            
+                    <button class="bg-transparent border-0" id="wishlistHeart" onclick="addToWishlist('<%=productDetails._id%>')"><i class="fa fa-heart <%if(productExistInWishlist==null){%>text-white<%}else{%>text-danger<%}%>"></i></button>
+          
+                <script>
+                  function addToWishlist(productId){
+                    $.ajax({
+                      url: '/users/wishlist',
+                      method: 'patch',
+                      data: {
+                        id : productId 
+                      },
+                      success: (res) => {
+
+                          if (res.data.message===0) {
+                          $('#wishlistHeart').html('<i class="fa fa-heart text-white">')
+                            Swal.fire({
+    toast: true,
+    icon: 'error',
+    position: 'top-right',
+    showConfirmButton: false,
+    timer: 1000,
+    timerProgressBar: true,
+    animation: true,
+    title: 'Removed from wishlist'})
+                            
+                        } else if(res.data.message===1) {
+                          $('#wishlistHeart').html('<i class="fa fa-heart text-danger">')
+                           Swal.fire({
+    toast: true,
+    icon: 'success',
+    position: 'top-right',
+    showConfirmButton: false,
+    timer: 1000,
+    timerProgressBar: true,
+    animation: true,
+    title: 'Added to wishlist'})
+                        } else{
+                          window.location.href = "/users/signIn";
+                        }
+                      }
+                    })
+                  }
+                </script>
               </div>
               <h3 class="fw-light shadow-product-heading"><%=productDetails.name%></h3>
               <p class="shadow-details">Price: ₹ <%=productDetails.price%></p>
@@ -167,13 +208,14 @@
                 <p class="w-50 shadow-details">Model Case:</p>
                 <p class="w-50 shadow-details"><%=productDetails.modelCase%></p>
               </div>
-              <div class="buy-cart row text-center justify-content-around">
-                <div class="buy-now border rounded col-lg-5 px-3 py-2">
-                  <a href="/users/cart/" class="text-white"><span>Buy Now</span></a>
-                </div>
-                <div class="add-to-cart border rounded col-lg-5 px-3 py-2">
-                  <a href="/users/cart/addToCart/<%=productDetails._id%>"  class="text-white"><span>Add to cart</span></a>
-                </div>
+              <div class="buy-cart row text-center justify-content-around p-0">
+                  <div class=" rounded col-5 border p-2  d-flex align-items-center justify-content-center" >
+                    <a href="/users/cart/" class="text-white"><span style="font-size: 0.8rem;">Buy Now</span></a>
+                  </div>
+                  <div class=" rounded col-5 border p-2  d-flex align-items-center justify-content-center">
+                  <a href="/users/cart/addToCart/<%=productDetails._id%>"  class="text-white"><span style="font-size: 0.8rem;">Add to cart</span></a>
+
+                  </div>
               </div>
             </div>
           </div>
@@ -219,6 +261,7 @@
         </div>
       </div>
         </div>
+       
         <!-- Carousel -->
         <div id="carouselIndicators" class="container rounded carousel carousel-dark slide w-75 my-5" data-bs-ride="true">
         <div class="carousel-indicators">
@@ -279,6 +322,6 @@
       crossorigin="anonymous"
     ></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   </body>
 </html>
