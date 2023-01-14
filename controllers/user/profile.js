@@ -2,7 +2,7 @@ const { findById } = require("../../models/user/details");
 const UserCLTN = require("../../models/user/details");
 const mongoose = require("mongoose");
 
-const page = async (req, res) => {
+exports.page = async (req, res) => {
   try {
     const userID = req.session.userID;
 
@@ -32,7 +32,7 @@ const page = async (req, res) => {
   }
 };
 
-const update = async (req, res) => {
+exports.update = async (req, res) => {
   try {
     const userID = req.session.userID;
     const newName = req.body.name;
@@ -45,9 +45,4 @@ const update = async (req, res) => {
   } catch (error) {
     console.log("Error updating user details: " + error);
   }
-};
-
-module.exports = {
-  page,
-  update,
 };

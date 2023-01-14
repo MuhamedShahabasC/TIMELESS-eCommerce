@@ -1,10 +1,9 @@
 const { default: mongoose } = require("mongoose");
 const sharp = require("sharp");
-const { findById } = require("../../models/admin/category");
 const categoriesCLTN = require("../../models/admin/category");
 const productCLTN = require("../../models/admin/product");
 
-const page = async (req, res) => {
+exports.page = async (req, res) => {
   try {
     const allCategories = await categoriesCLTN.find({});
     const allProducts = await productCLTN.find().populate("category");
@@ -18,7 +17,7 @@ const page = async (req, res) => {
   }
 };
 
-const addProduct = async (req, res) => {
+exports.addProduct = async (req, res) => {
   try {
     let frontImage = `${req.body.name}_frontImage_${Date.now()}.png`;
     sharp(req.files.frontImage[0].buffer)
@@ -64,7 +63,7 @@ const addProduct = async (req, res) => {
   }
 };
 
-const editPage = async (req, res) => {
+exports.editPage = async (req, res) => {
   try {
     const currentProduct = await productCLTN.findById(req.query.id);
     const categories = await categoriesCLTN.find({});
@@ -78,7 +77,7 @@ const editPage = async (req, res) => {
   }
 };
 
-const edit = async (req, res) => {
+exports.edit = async (req, res) => {
   try {
     const currentProduct = await productCLTN.findById(req.query.id);
     await productCLTN.findByIdAndUpdate(currentProduct._id, {
@@ -97,7 +96,7 @@ const edit = async (req, res) => {
   }
 };
 
-const changeListing = async (req, res) => {
+exports.changeListing = async (req, res) => {
   try {
     const currentProduct = await productCLTN.findById(req.query.id);
     let currentListing = currentProduct.listed;
@@ -114,12 +113,4 @@ const changeListing = async (req, res) => {
   } catch (error) {
     console.log("Product listing changing error: " + error);
   }
-};
-
-module.exports = {
-  page,
-  addProduct,
-  editPage,
-  edit,
-  changeListing,
 };

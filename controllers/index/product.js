@@ -1,7 +1,8 @@
 const productCLTN = require("./../../models/admin/product");
 const UserCLTN = require("../../models/user/details");
 const wishlistCLTN = require("../../models/user/wishlist");
-const productListing = require('../../controllers/index/productListing')
+const productListing = require("../../controllers/index/productListing");
+const ReviewCLTN = require("../../models/user/reviews");
 
 exports.view = async (req, res) => {
   try {
@@ -16,12 +17,27 @@ exports.view = async (req, res) => {
         products: req.params.id,
       });
     }
+    let reviews = await ReviewCLTN.find({ product: productDetails._id })
+      .sort({
+        createdAt: -1,
+      })
+      .populate({
+        path: "customer",
+        select: "name photo",
+      });
+      const numberOfReviews = reviews.length
+    reviews = reviews.slice(0, 6);
+    if (reviews == "") {
+      reviews = null;
+    }
     res.render("index/product", {
       documentTitle: productDetails.name,
       productDetails,
       session: req.session.userID,
       currentUser,
       productExistInWishlist,
+      reviews,
+      numberOfReviews
     });
   } catch (error) {
     console.log("Error rendering product page: " + error);

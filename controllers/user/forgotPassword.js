@@ -2,13 +2,17 @@ const UserCLTN = require("../../models/user/details");
 const bcrypt = require("bcrypt");
 const nodemailer = require('nodemailer')
 
-const Page = (req, res) => {
-  res.render("user/partials/forgotPassword", {
-    documentTitle: "Forgot Password | User",
-  });
+exports.Page = (req, res) => {
+  try {
+    res.render("user/partials/forgotPassword", {
+      documentTitle: "Forgot Password | User",
+    });
+  } catch (error) {
+    console.log('Error rendering forgot password page: ' + error)
+  }
 };
 
-const emailVerification = async (req, res) => {
+exports.emailVerification = async (req, res) => {
   const inputEmail = req.body.email;
   const mailChecker = await UserCLTN.findOne({ email: inputEmail });
   if (mailChecker) {
@@ -44,7 +48,7 @@ const emailVerification = async (req, res) => {
   }
 };
 
-const otpPage = (req, res) => {
+exports.otpPage = (req, res) => {
   if (req.session.resetPasswordAuth && req.session.resetOTP) {
     res.render("user/partials/otp", {
       documentTitle: "Update User Password | TIMELESS",
@@ -54,7 +58,7 @@ const otpPage = (req, res) => {
   }
 };
 
-const otpVerification = (req, res) => {
+exports.otpVerification = (req, res) => {
   if (req.session.resetPasswordAuth && req.session.resetOTP) {
     const inputOTP = req.body.otp;
     const resetOTP = req.session.resetOTP;
@@ -74,7 +78,7 @@ const otpVerification = (req, res) => {
   }
 };
 
-const passwordChangePage = (req, res) => {
+exports.passwordChangePage = (req, res) => {
   if (req.session.updatePassword && req.session.resetPasswordAuth) {
     res.render("user/partials/changePassword", {
       documentTitle: "User Password Reset | TIMELESS",
@@ -84,7 +88,7 @@ const passwordChangePage = (req, res) => {
   }
 };
 
-const updatePassword = async (req, res) => {
+exports.updatePassword = async (req, res) => {
   if (req.session.resetPasswordAuth && req.session.updatePassword) {
     const customerEmail = req.session.resetPasswordAuth;
     const newPassword = req.body.newPassword;
@@ -102,11 +106,3 @@ const updatePassword = async (req, res) => {
   }
 };
 
-module.exports = {
-  Page,
-  emailVerification,
-  passwordChangePage,
-  otpPage,
-  otpVerification,
-  updatePassword,
-};

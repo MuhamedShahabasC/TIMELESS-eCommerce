@@ -159,7 +159,6 @@ exports.defaultAddress = async (req, res) => {
 };
 
 let orderDetails;
-let couponUsed;
 exports.checkout = async (req, res) => {
   try {
     // Shipping Address
@@ -204,7 +203,7 @@ exports.checkout = async (req, res) => {
       req.body.couponDiscount = 0;
       couponUsed = null;
     }
-
+    req.session.couponUsed = couponUsed;
     // Cart summary
     const orderSummary = await cartCLTN.aggregate([
       {
@@ -229,8 +228,7 @@ exports.checkout = async (req, res) => {
     });
 
     // Creating order
-
-    orderDetails = new orderCLTN({
+    orderDetails = {
       customer: req.session.userID,
       shippingAddress: {
         building: shippingAddress.building,
@@ -246,19 +244,23 @@ exports.checkout = async (req, res) => {
       price: userCart.totalPrice,
       finalPrice: req.body.finalPrice,
       discountPrice: req.body.couponDiscount,
-    });
+    };
+    req.session.orderDetails = orderDetails;
+    const transactionID = Math.floor(
+      Math.random() * (1000000000000 - 10000000000) + 10000000000
+    );
+    req.session.transactionID = transactionID;
     if (req.body.paymentMethod === "COD") {
-      req.session.payment = orderDetails._id;
-      res.redirect("/users/cart/checkout/" + orderDetails._id);
+      res.redirect("/users/cart/checkout/" + transactionID);
     } else if (req.body.paymentMethod === "PayPal") {
-      req.session.payment = orderDetails._id;
+      const billAmount = orderDetails.finalPrice * 0.012;
       const create_payment_json = {
         intent: "sale",
         payer: {
           payment_method: "paypal",
         },
         redirect_urls: {
-          return_url: `http://localhost:8080/users/cart/checkout/${orderDetails._id}`,
+          return_url: `http://localhost:8080/users/cart/checkout/${transactionID}`,
           cancel_url: "http://localhost:8080/users/cart/checkout",
         },
         transactions: [
@@ -266,9 +268,9 @@ exports.checkout = async (req, res) => {
             item_list: {
               items: [
                 {
-                  name: `Order Number-${orderDetails._id}`,
-                  sku: `Order Number-${orderDetails._id}`,
-                  price: orderDetails.finalPrice,
+                  name: `Order Number-${transactionID}`,
+                  sku: `Order Number-${transactionID}`,
+                  price: billAmount,
                   currency: "USD",
                   quantity: 1,
                 },
@@ -276,7 +278,7 @@ exports.checkout = async (req, res) => {
             },
             amount: {
               currency: "USD",
-              total: orderDetails.finalPrice,
+              total: billAmount,
             },
             description: "TIMELESS eCommerce",
           },
@@ -303,37 +305,43 @@ exports.checkout = async (req, res) => {
 };
 
 exports.result = async (req, res) => {
-  if (req.session.payment == orderDetails._id) {
-    orderDetails.save();
-    if (couponUsed) {
-      await userCLTN.findByIdAndUpdate(req.session.userID, {
-        $push: {
-          orders: [mongoose.Types.ObjectId(orderDetails)],
-          couponsUsed: [couponUsed],
+  try {
+    if (req.session.transactionID == req.params.id) {
+      const couponUsed = req.session.couponUsed;
+      req.session.transactionID = false;
+      const orderDetails = new orderCLTN(req.session.orderDetails);
+      orderDetails.save();
+      if (couponUsed) {
+        await userCLTN.findByIdAndUpdate(req.session.userID, {
+          $push: {
+            orders: [mongoose.Types.ObjectId(orderDetails)],
+            couponsUsed: [couponUsed],
+          },
+        });
+      } else {
+        await userCLTN.findByIdAndUpdate(req.session.userID, {
+          $push: {
+            orders: [mongoose.Types.ObjectId(orderDetails)],
+          },
+        });
+      }
+      await cartCLTN.findOneAndUpdate(
+        {
+          customer: req.session.userID,
         },
+        {
+          $set: { products: [], totalPrice: 0, totalQuantity: 0 },
+        }
+      );
+      const orderResult = "Order Placed";
+      res.render("user/profile/partials/orderResult", {
+        documentTitle: orderResult,
+        orderID: orderDetails._id,
       });
     } else {
-      await userCLTN.findByIdAndUpdate(req.session.userID, {
-        $push: {
-          orders: [mongoose.Types.ObjectId(orderDetails)],
-        },
-      });
+      res.redirect("/");
     }
-    await cartCLTN.findOneAndUpdate(
-      {
-        customer: req.session.userID,
-      },
-      {
-        $set: { products: [], totalPrice: 0, totalQuantity: 0 },
-      }
-    );
-    const orderResult = "Order Placed";
-    res.render("user/profile/partials/orderResult", {
-      documentTitle: orderResult,
-      orderID: orderDetails._id,
-    });
-    req.session.payment = false;
-  } else {
-    res.redirect("/users/cart/checkout");
+  } catch (error) {
+    console.log("Error rendering success page: " + error);
   }
 };

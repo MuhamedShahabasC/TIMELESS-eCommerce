@@ -1,7 +1,6 @@
-const { findOne, find } = require("../../models/user/details");
 const UserCLTN = require("../../models/user/details");
 
-const viewAll = async (req, res) => {
+exports.viewAll = async (req, res) => {
   try {
     const userID = req.session.userID;
     const currentUser = await UserCLTN.findById(userID);
@@ -15,7 +14,7 @@ const viewAll = async (req, res) => {
   }
 };
 
-const addNew = async (req, res) => {
+exports.addNew = async (req, res) => {
   try {
     const userID = req.session.userID;
     await UserCLTN.updateMany(
@@ -43,7 +42,7 @@ const addNew = async (req, res) => {
   }
 };
 
-const deleteAddress = async (req, res) => {
+exports.deleteAddress = async (req, res) => {
   try {
     const userID = req.session.userID;
     const addressID = req.query.addressID;
@@ -57,7 +56,7 @@ const deleteAddress = async (req, res) => {
   }
 };
 
-const defaultToggler = async (req, res) => {
+exports.defaultToggler = async (req, res) => {
   try {
     const userID = req.session.userID;
     const currentAddressID = req.query.addressID;
@@ -73,11 +72,4 @@ const defaultToggler = async (req, res) => {
   } catch (error) {
     console.log("Error changing default address: " + error);
   }
-};
-
-module.exports = {
-  viewAll,
-  addNew,
-  deleteAddress,
-  defaultToggler,
 };

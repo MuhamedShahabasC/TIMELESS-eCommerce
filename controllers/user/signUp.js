@@ -1,8 +1,12 @@
 const UserCLTN = require("../../models/user/details");
 const CartCLTN = require("../../models/user/cart");
 const WishlistCLTN = require("../../models/user/wishlist");
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
+const nodemailer = require("nodemailer");
+const { default: mongoose } = require("mongoose");
 
-const signUpPage = (req, res) => {
+exports.signUpPage = (req, res) => {
   try {
     if (req.session.tempOTP != false) {
       req.session.tempOTP = false;
@@ -17,13 +21,9 @@ const signUpPage = (req, res) => {
 };
 
 // Register User
-const bcrypt = require("bcrypt");
-const saltRounds = 10;
-const nodemailer = require("nodemailer");
-const { default: mongoose } = require("mongoose");
 let newUserDetails;
 let otpKiller;
-const registerUser = async (req, res) => {
+exports.registerUser = async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
     newUserDetails = new UserCLTN({
@@ -78,7 +78,7 @@ const registerUser = async (req, res) => {
   }
 };
 
-const otpPage = (req, res) => {
+exports.otpPage = (req, res) => {
   try {
     res.render("user/partials/otp", {
       documentTitle: "OTP Verification | TIMELESS",
@@ -88,7 +88,7 @@ const otpPage = (req, res) => {
   }
 };
 
-const otpVerification = async (req, res) => {
+exports.otpVerification = async (req, res) => {
   try {
     if (req.session.tempOTP) {
       if (req.session.tempOTP == req.body.otp) {
@@ -124,11 +124,4 @@ const otpVerification = async (req, res) => {
   } catch (error) {
     console.log("Error verifying OTP: " + error);
   }
-};
-
-module.exports = {
-  signUpPage,
-  registerUser,
-  otpPage,
-  otpVerification,
 };

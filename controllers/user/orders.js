@@ -7,12 +7,13 @@ exports.viewAll = async (req, res) => {
       .find({
         customer: req.session.userID,
       })
+      .sort({ _id: -1 })
       .populate("customer")
       .populate("couponUsed");
     res.render("user/profile/partials/orders", {
       documentTitle: "My Orders | TIMELESS",
       allOrders,
-      moment
+      moment,
     });
   } catch (error) {
     console.log("Error rendering orders: " + error);
@@ -20,17 +21,22 @@ exports.viewAll = async (req, res) => {
 };
 
 exports.details = async (req, res) => {
-  const currentOrder = await orderCLTN
-    .findById(req.params.id)
-    .populate("summary.product")
-    .populate("couponUsed").sort('');
-  if (currentOrder) {
-    res.render("user/profile/partials/orderDetails", {
-      documentTitle: "Order Details | TIMELESS",
-      currentOrder,
-      moment
-    });
-  } else {
-    res.redirect('/pageNotFound')
+  try {
+    const currentOrder = await orderCLTN
+      .findById(req.params.id)
+      .populate("summary.product")
+      .populate("couponUsed")
+      .sort("");
+    if (currentOrder) {
+      res.render("user/profile/partials/orderDetails", {
+        documentTitle: "Order Details | TIMELESS",
+        currentOrder,
+        moment,
+      });
+    } else {
+      res.redirect("/pageNotFound");
+    }
+  } catch (error) {
+    console.log("Error showing order results: " + error);
   }
 };

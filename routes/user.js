@@ -32,7 +32,7 @@ router.get("/profile", sessionCheck, profile.page);
 router.post(
   "/profile",
   sessionCheck,
-  imageUpload.single('photo'),
+  imageUpload.single("photo"),
   imageProcessor.userProfilePic,
   profile.update
 );
@@ -69,7 +69,7 @@ router.post(
   sessionCheck,
   checkout.defaultAddress
 );
-router.get("/cart/checkout/:id", sessionCheck, objectIdCheck, checkout.result);
+router.get("/cart/checkout/:id", sessionCheck, checkout.result);
 
 const wishlist = require("../controllers/user/wishlist");
 router
@@ -81,6 +81,12 @@ router
 const orders = require("../controllers/user/orders");
 router.get("/orders", sessionCheck, orders.viewAll);
 router.get("/orders/:id", sessionCheck, objectIdCheck, orders.details);
+
+const reviews = require("../controllers/user/reviews");
+router
+  .route("/reviews")
+  .post(sessionCheck, reviews.addNew)
+  .patch(reviews.helpful);
 
 const signOut = require("../controllers/user/signOut");
 router.get("/signOut", sessionCheck, signOut.signOut);

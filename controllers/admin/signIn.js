@@ -1,3 +1,6 @@
+const adminCLTN = require("../../models/admin/details");
+const bcrypt = require("bcrypt");
+
 exports.page = (req, res) => {
   try {
     res.render("admin/partials/signIn", {
@@ -8,8 +11,6 @@ exports.page = (req, res) => {
   }
 };
 
-const adminCLTN = require("../../models/admin/details");
-const bcrypt = require("bcrypt");
 exports.verification = async (req, res) => {
   try {
     const inputEmail = req.body.email;

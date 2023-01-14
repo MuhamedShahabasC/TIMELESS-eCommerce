@@ -1,8 +1,7 @@
-const { findById } = require("../../models/admin/details");
 const couponCLTN = require("./../../models/admin/coupons");
 const moment = require("moment");
 
-const page = async (req, res) => {
+exports.page = async (req, res) => {
   try {
     const coupons = await couponCLTN.find();
     res.render("admin/partials/coupons", {
@@ -15,7 +14,7 @@ const page = async (req, res) => {
   }
 };
 
-const addNew = async (req, res) => {
+exports.addNew = async (req, res) => {
   try {
     const newCoupon = new couponCLTN({
       name: req.body.name,
@@ -31,7 +30,7 @@ const addNew = async (req, res) => {
   }
 };
 
-const changeActivity = async (req, res) => {
+exports.changeActivity = async (req, res) => {
   try {
     const currentCoupon = await couponCLTN.findById(req.query.id);
     let currentActivity = currentCoupon.active;
@@ -48,10 +47,4 @@ const changeActivity = async (req, res) => {
   } catch (error) {
     console.log("Error changing coupon activity: " + error);
   }
-};
-
-module.exports = {
-  page,
-  addNew,
-  changeActivity,
 };

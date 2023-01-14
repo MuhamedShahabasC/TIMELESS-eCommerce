@@ -2,40 +2,52 @@ const orderCLTN = require("../../models/user/orders");
 const moment = require("moment");
 
 exports.viewAll = async (req, res) => {
-  const allOrders = await orderCLTN
-    .find()
-    .sort({ orderedOn: -1 })
-    .populate("customer", "name email")
-    .populate("couponUsed", "name")
-    .populate("summary.product", "category name brand price")
-    .populate("summary.product.category");
-  res.render("admin/partials/orders", {
-    allOrders,
-    documentTitle: "Orders | TIMELESS",
-    moment,
-  });
+  try {
+    const allOrders = await orderCLTN
+      .find()
+      .sort({ orderedOn: -1 })
+      .populate("customer", "name email")
+      .populate("couponUsed", "name")
+      .populate("summary.product", "category name brand price")
+      .populate("summary.product.category");
+    res.render("admin/partials/orders", {
+      allOrders,
+      documentTitle: "Orders | TIMELESS",
+      moment,
+    });
+  } catch (error) {
+    console.log("Error rendering all orders: " + error);
+  }
 };
 
 exports.deliver = async (req, res) => {
-  await orderCLTN.findByIdAndUpdate(req.body.orderID, {
-    $set: {
-      delivered: true,
-      deliveredOn: Date.now(),
-    },
-  });
-  res.json({
-    data: { delivered: 1 },
-  });
+  try {
+    await orderCLTN.findByIdAndUpdate(req.body.orderID, {
+      $set: {
+        delivered: true,
+        deliveredOn: Date.now(),
+      },
+    });
+    res.json({
+      data: { delivered: 1 },
+    });
+  } catch (error) {
+    console.log("Error delivering product: " + error);
+  }
 };
 
 exports.details = async (req, res) => {
-  const currentOrder = await orderCLTN
-    .findById(req.params.id)
-    .populate("summary.product")
-    .populate("couponUsed")
-  res.render("admin/partials/orderDetails", {
-    currentOrder,
-    moment,
-    documentTitle: "Order Details | TIMELESS",
-  });
+  try {
+    const currentOrder = await orderCLTN
+      .findById(req.params.id)
+      .populate("summary.product")
+      .populate("couponUsed");
+    res.render("admin/partials/orderDetails", {
+      currentOrder,
+      moment,
+      documentTitle: "Order Details | TIMELESS",
+    });
+  } catch (error) {
+    console.log("Error rendering single order details: " + error);
+  }
 };

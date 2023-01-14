@@ -19,12 +19,26 @@
     />
     <title><%=locals.documentTitle%> | TIMELESS</title>
     <style>
+      
+      
+      #reviewButtomLeft, #reviewButtomRight{
+        width: 3%;
+      }
       .product-details {
         width: 80%;
       }
       @media all and (max-width: 768px) {
         .product-details {
           width: 100%;
+        }
+        #carouselIndicators{
+          width: 100% !important;
+        }
+        #description{
+          font-size: 85%;
+        }
+        #description h6{
+          font-size: 80%;
         }
       }
       .product-details {
@@ -36,6 +50,81 @@
       }
       .swal2-popup {
   font-size: 0.85rem !important;
+}
+.review-star {
+  position: relative;
+  display: inline-block;
+  /* border: none; */
+  font-size: 14px;
+  /* margin: 50px auto; */
+  /* left: 50%;
+  transform: translateX(-50%); */
+}
+
+.review-star input {
+  border: 0;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  position: absolute !important;
+  clip: rect(1px 1px 1px 1px);
+  clip: rect(1px, 1px, 1px, 1px);
+  opacity: 0;
+}
+
+.review-star label {
+  position: relative;
+  float: right;
+  color: #C8C8C8;
+}
+
+.review-star label:before {
+  margin: 3px;
+  content: "★";
+  display: inline-block;
+  font-size: 1.7em;
+  color: #ccc;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+.review-star input:checked ~ label:before {
+  color: #FFC107;
+}
+
+.review-star label:hover ~ label:before {
+  color: #ffdb70;
+}
+
+.review-star label:hover:before {
+  color: #FFC107;
+}
+@media screen and (min-width: 768px) {
+  .card_wrap {
+    display: flex;
+  }
+  .cardMargin {
+    margin: 0.5em;
+    width: calc(100% / 3);
+  }
+}
+@media screen and (max-width: 768px) {
+  .card:not(:first-child) {
+    display: none;
+  }
+}
+.card {
+  border: none;
+  border-radius: 0;
+  box-shadow: 2px 6px 8px 0 rgba(22, 22, 26, 0.18);
+}
+.carousel-inner {
+  padding: 1em;
+}
+
+.carousal-row {
+  width: 79%;
 }
 
     </style>
@@ -221,6 +310,7 @@
           </div>
         </div>
         <div class="product-description mt-2 mb-5 container text-center">
+        <div id="description">
           <div class="row my-3 justify-content-around">
             <div class="col-3 d-flex flex-column">
               <div class="description-heading">
@@ -261,9 +351,10 @@
         </div>
       </div>
         </div>
+        </div>
        
         <!-- Carousel -->
-        <div id="carouselIndicators" class="container rounded carousel carousel-dark slide w-75 my-5" data-bs-ride="true">
+        <div id="carouselIndicators" class="container rounded carousel carousel-dark slide my-5 w-75" data-bs-ride="true">
         <div class="carousel-indicators">
           <button type="button" data-bs-target="#carouselIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
           <button type="button" data-bs-target="#carouselIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
@@ -289,10 +380,221 @@
           <span class="visually-hidden">Next</span>
         </button>
         </div>
+<!-- Add reviews -->
+<!-- <form action="/users/reviews" method="post">
+  <div class="mb-3">
+    <label for="review" class="form-label">Title</label>
+    <input type="text" name="review" class="form-control" id="review" >
+  </div>
+  <div class="mb-3">
+    <div class="review-star">
+      <input type="checkbox" name="star" id="st1" value="5" />
+      <label for="st1"></label>
+      <input type="checkbox" name="star" id="st2" value="4" />
+      <label for="st2"></label>
+      <input type="checkbox" name="star" id="st3" value="3" />
+      <label for="st3"></label>
+      <input type="checkbox" name="star" id="st4" value="2" />
+      <label for="st4"></label>
+      <input type="checkbox" name="star" id="st5" value="1" />
+      <label for="st5"></label>
+    </div>
+  </div>
+  <button type="submit" class="btn btn-sm btn-dark">Submit</button>
+</form> -->
+
+<script>
+  
+  function reviewAdd(){
+    Swal.fire({
+      showCloseButton: true,
+      showConfirmButton: true,
+html: `<form id="reviewForm">
+  <div class="mb-3">
+    <label for="review" class="form-label">Post a review</label>
+    <input name="review" class="form-control" id="review pattern='^[A-Z]{1,30}$" >
+  </div>
+  <input type="text" name="product" value='<%=productDetails._id%>' hidden>
+  <div class="mb-3">
+    <div class="review-star">
+      <input type="checkbox" name="rating" id="st1" value="5" />
+      <label for="st1"></label>
+      <input type="checkbox" name="rating" id="st2" value="4" />
+      <label for="st2"></label>
+      <input type="checkbox" name="rating" id="st3" value="3" />
+      <label for="st3"></label>
+      <input type="checkbox" name="rating" id="st4" value="2" />
+      <label for="st4"></label>
+      <input type="checkbox" name="rating" id="st5" value="1" />
+      <label for="st5"></label>
+    </div>
+  </div>
+</form>`
+}).then((result) => {
+  if(result.isConfirmed){
+    $.ajax({
+      url: '/users/reviews',
+      method: 'post',
+      data: $('#reviewForm').serialize(),
+      success: (res) => {
+        $('section').load(location.href + " section")
+        $("#addReview").hide()
+      }
+    })
+  }
+})
+  }
+</script>
+<!-- Review Carousel -->
+<%if(reviews!=null){%>
+<div class="container" id="reviewContainer">
+  <% if (numberOfReviews!=null){%> <h6 class="text-center mx-auto col-lg-10">Reviews - (<%=numberOfReviews%>)</h6><%}%>
+  </div>
+    <div class="container d-flex justify-content-center">
+      <div class="row carousal-row">
+          <div id="carouselExampleControls" class="carousel carousel-dark slide" data-bs-ride="carousel">
+              <div class="carousel-inner">
+                <div class="carousel-item active">
+                  <div class="cards-wrapper card_wrap">
+                      <div class="card cardMargin">
+                        <div class="card-body">
+                          
+                          <div class=" text-center" style="position: relative;">
+                            <span>
+                              <% for( i=1; i<=5; i++){ %>
+                                <%if(i<=reviews[0].rating){%>
+                                <span style="color: yellow">★</span>
+                                <%}else{%>
+                                  <span style="color: gray">★</span>
+                              <%}}%>
+                            </span>
+                            <span id="helpful<%=reviews[0]._id%>" style=" position: absolute; right: 0;">
+                              <button onclick="helpful('<%=reviews[0]._id%>')" class="btn btn-sm rounded" style="background-color: #f3f3f3;"><%=reviews[0].helpful%> 👍</button>
+                            </span>
+                          </div>
+                          <h6 class="my-1 card-title"><%=reviews[0].review%></h6>
+                          <div>
+                            <p class="card-text" style="font-size: 0.65rem"><%=reviews[0].customer.name%></p>
+                          <img src="/public/img/users/<%=reviews[0].customer.photo%>" class="card-img-top w-25 rounded-2" alt="..."></a>
+                          </div>
+                          </div>
+                        </div>
+                        <%if(reviews[1]){%>
+                        <div class="card cardMargin">
+                          <div class="card-body">
+                            <div class=" text-center" style="position: relative;">
+                              <span>
+                                <% for( i=1; i<=5; i++){ %>
+                                  <%if(i<=reviews[1].rating){%>
+                                  <span style="color: yellow">★</span>
+                                  <%}else{%>
+                                    <span style="color: gray">★</span>
+                                <%}}%>
+                              </span>
+                              <span id="helpful<%=reviews[1]._id%>" style=" position: absolute; right: 0;">
+                                <button onclick="helpful('<%=reviews[1]._id%>')" class="btn btn-sm rounded" style="background-color: #f3f3f3;"><%=reviews[1].helpful%> 👍</button>
+                              </span>
+                            </div>
+                            <h6 class="my-1 card-title"><%=reviews[1].review%></h6>
+                            <p class="card-text" style="font-size: 0.65rem"><%=reviews[1].customer.name%></p>
+                            <img src="/public/img/users/<%=reviews[1].customer.photo%>" class="card-img-top w-25 rounded-2" alt="..."></a>
+                           </div>
+                         </div>
+                         <%}%>
+                        <%if(reviews[2]){%>
+
+                         <div class="card cardMargin">
+                           <div class="card-body">
+                            <div class=" text-center" style="position: relative;">
+                              <span>
+                                <% for( i=1; i<=5; i++){ %>
+                                  <%if(i<=reviews[2].rating){%>
+                                  <span style="color: yellow">★</span>
+                                  <%}else{%>
+                                    <span style="color: gray">★</span>
+                                <%}}%>
+                              </span>
+                              <span id="helpful<%=reviews[2]._id%>" style=" position: absolute; right: 0;">
+                                <button onclick="helpful('<%=reviews[2]._id%>')" class="btn btn-sm rounded" style="background-color: #f3f3f3;"><%=reviews[2].helpful%> 👍</button>
+                              </span>
+                            </div>
+                             <h6 class="my-1 card-title"><%=reviews[2].review%></h6>
+                             <p class="card-text" style="font-size: 0.65rem"><%=reviews[2].customer.name%></p>
+                             <img src="/public/img/users/<%=reviews[2].customer.photo%>" class="card-img-top w-25 rounded-2" alt="..."></a>
+                           </div>
+                         </div>
+                         <%}%>
+
+                  </div>
+          
+                </div>
+                <div class="carousel-item ">
+                    <div class="cards-wrapper card_wrap">
+                        <% for(var i=3; i<=6; i++){%>
+                          <%if(reviews[i]!=null){%>
+                          <div class="card cardMargin">
+                            <div class="card-body">
+                              <div class=" text-center" style="position: relative;">
+                                <span>
+                                  <% for( j=1; j<=5; j++){ %>
+                                    <%if(i<=reviews[i].rating){%>
+                                    <span style="color: yellow">★</span>
+                                    <%}else{%>
+                                      <span style="color: gray">★</span>
+                                  <%}}%>
+                                </span>
+                                <span id="helpful<%=reviews[i]._id%>" style=" position: absolute; right: 0;">
+                                  <button onclick="helpful('<%=reviews[i]._id%>')" class="btn btn-sm rounded" style="background-color: #f3f3f3;"><%=reviews[i].helpful%> 👍</button>
+                                </span>
+                              </div>
+                              <h6 class="card-title"><%=reviews[i].review%></h6>
+                              <p class="card-text" style="font-size: 0.65rem"><%=reviews[i].customer.name%></p>
+                              <img src="/public/img/users/<%=reviews[i].customer.photo%>" class="card-img-top w-25 rounded-2" alt="...">
+                            </div>
+                          </div>
+                          <%}%>
+                            <%}%>
+                      </div>
+                    </div>
+              </div>
+          <script>
+            function helpful(id){
+              $.ajax({
+                url: '/users/reviews',
+                method: 'patch',
+                data: {
+                  reviewID : id
+                },
+                success: (res) => {
+if (res.success==1) {
+  $('#helpful'+id).load(location.href + " #helpful"+id)
+}else{
+  window.location.replace("/users/signIn")
+}
+                }
+              })
+            }
+          </script>
+              <button class="carousel-control-prev" id="reviewButtomLeft" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon carousel-arrow" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+              </button>
+              <button class="carousel-control-next" id="reviewButtomRight" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+                <span class="carousel-control-next-icon carousel-arrow" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+              </button>
+            </div>
+      </div>
+      
+    </div>
+<%}%>
+  <%if(session){%>
+    <button class=" btn btn-sm btn-dark mb-3 col-lg-2 mb-4" id="addReview" onclick="reviewAdd()">Add a review</button>
+  <%}%> 
          <!-- Still Need any help -->
-        <div class="still-help">
+        <div class="still-help" style="font-size: 0.75rem;">
         <p><span class="fw-bold">Still need any help?</span> Our executive will help you in making the choice.</p>
-        <h6 class="fw-bold text-underline"><u><a href="">Contact executive</a></u></h6>
+        <h6 class="fw-bold text-underline"><u><a href="" style="font-size: 0.75rem;">Contact executive</a></u></h6>
          </div>
     </section>
     <%}%>
@@ -312,7 +614,8 @@
         </span>
       </div>
       <div class="copyright bg-theme py-2 text-center">
-        <span>Copyright © 2022 | Timeless</span>
+        <span>Copyright © 2022 | Timeless | Made by <a href="https://muhamedshahabas.github.io/">Muhamed Shahabas C</a></span>
+
       </div>
     </footer>
 

@@ -4,7 +4,9 @@ const sessionCheck = require("../middlewares/admin/sessionCheck");
 const objectIdCheck = require("../middlewares/admin/objectIdCheck");
 
 const signIn = require("../controllers/admin/signIn");
-router.route("/").get(signIn.page).post(signIn.verification);
+router.route("/")
+  .get(signIn.page)
+  .post(signIn.verification);
 
 const customers = require("../controllers/admin/customers");
 router
@@ -48,10 +50,8 @@ router.get("/coupon_management/changeActivity", coupon.changeActivity);
 const signOut = require("../controllers/admin/signOut");
 router.get("/signOut", signOut.signOut);
 
-// Temp dashboard
-router.get("/dashboard", (req, res) => {
-  res.redirect("/admin/coupon_management");
-});
+const dashboard = require("../controllers/admin/dashboard");
+router.route("/dashboard").get(dashboard.view).put(dashboard.chartData);
 
 const orders = require("../controllers/admin/orders");
 router.route("/orders").get(orders.viewAll).patch(orders.deliver);
