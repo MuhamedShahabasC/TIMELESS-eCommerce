@@ -24,41 +24,103 @@
         <div class="mb-3">
           <input
             class="form-control"
-            id="form-holder"
+            id="inputNumber"
+            onkeyup="numberValidator()"
             name="number"
             placeholder="Contact Number"
-            pattern="^[0-9]{10}$"
             required
           />
+          <span
+            id="numberInvalid"
+            class="text-danger rounded"
+            style="font-size: 0.75rem; text-transform: none"
+          ></span>
         </div>
+
         <div class="mb-3">
           <input
             class="form-control"
-            id="form-holder"
+            id="inputMail"
             name="email"
             placeholder="e-Mail"
             value="@gmail.com"
-            pattern="^(([-\w\d]+)(\.[-\w\d]+)*@([-\w\d]+)(\.[-\w\d]+)*(\.([a-zA-Z]{2,5}|[\d]{1,3})){1,2})$"
+            onkeyup="mailValidator()"
             required
           />
+          <span
+            id="mailInvalid"
+            class="text-danger rounded"
+            style="font-size: 0.75rem; text-transform: none"
+          ></span>
         </div>
         <div class="mb-3">
           <input
             type="password"
             class="form-control"
-            id="form-holder"
+            id="inputPassword"
             placeholder="Password"
+            onkeyup="passwordValidator()"
             name="password"
-            value=""
             required
           />
+          <span
+            id="passwordInvalid"
+            class="text-danger rounded"
+            style="font-size: 0.75rem; text-transform: none"
+          ></span>
         </div>
-        <input type="submit" class="btn btn-dark w-100" value="Send OTP" />
+        <input
+          type="submit"
+          id="submitButton"
+          class="btn btn-dark w-100"
+          value="Send OTP"
+        />
       </form>
       <div class="form-footer d-flex justify-content-end">
-        <a href="/users/signIn"> Already have an account? </a>
+        <a href="/users/signIn"> Already have an account?</a>
       </div>
     </div>
   </div>
 </div>
+<script>
+  function numberValidator() {
+    const inputNumber = $("#inputNumber").val();
+    const numberReg = new RegExp("^[0-9]{10}$");
+    if (numberReg.test(inputNumber)) {
+      $("#submitButton").css("pointer-events", "");
+      $("#numberInvalid").empty();
+    } else {
+      $("#submitButton").css({ "pointer-events": "none" });
+      $("#numberInvalid").html(
+        '<i class="fa fa-exclamation"></i>Invalid contact Number'
+      );
+    }
+  }
+  function mailValidator() {
+    const inputMail = $("#inputMail").val();
+    if (
+      inputMail.match(
+        /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      )
+    ) {
+      $("#submitButton").css("pointer-events", "");
+      $("#mailInvalid").empty();
+    } else {
+      $("#submitButton").css({ "pointer-events": "none" });
+      $("#mailInvalid").html('<i class="fa fa-exclamation"></i>Invalid E-mail');
+    }
+  }
+  function passwordValidator() {
+    const inputPassword = $("#inputPassword").val();
+    if (inputPassword.match(/^(?=.*?[A-Za-z])(?=.*?[0-9]).{8,}$/)) {
+      $("#submitButton").css("pointer-events", "");
+      $("#passwordInvalid").empty();
+    } else {
+      $("#submitButton").css({ "pointer-events": "none" });
+      $("#passwordInvalid").html(
+        '<i class="fa fa-exclamation"></i>Password must contain atleast a number and an alphabet'
+      );
+    }
+  }
+</script>
 <%- include('../layouts/footer') %>

@@ -21,17 +21,16 @@ exports.signUpPage = (req, res) => {
 };
 
 // Register User
-let newUserDetails;
-let otpKiller;
 exports.registerUser = async (req, res) => {
   try {
     const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
-    newUserDetails = new UserCLTN({
+    const newUserDetails = {
       name: req.body.name.trim(),
       number: req.body.number,
       email: req.body.email.toLowerCase(),
       password: hashedPassword,
-    });
+    };
+    req.session.newUserDetails = newUserDetails;
     const inputEmail = req.body.email;
     const inputNumber = req.body.number;
     const emailCheck = await UserCLTN.findOne({ email: inputEmail });
@@ -44,12 +43,6 @@ exports.registerUser = async (req, res) => {
     } else {
       const tempOTP = Math.floor(Math.random() * (99999 - 10000 + 1)) + 10000;
       req.session.tempOTP = tempOTP;
-
-      // OTP Session destroys in 5mins
-      otpKiller = setTimeout(() => {
-        req.session.tempOTP = false;
-        console.log("Account creation OTP Expired.");
-      }, 300000);
 
       // Transporter
       const transporter = await nodemailer.createTransport({
@@ -93,9 +86,9 @@ exports.otpVerification = async (req, res) => {
     if (req.session.tempOTP) {
       if (req.session.tempOTP == req.body.otp) {
         console.log("Account creation OTP deleted: " + req.session.tempOTP);
-        await newUserDetails.save();
+        const newUserDetails = new UserCLTN(req.session.newUserDetails);
+        newUserDetails.save();
         req.session.tempOTP = false;
-        clearTimeout(otpKiller);
         res.redirect("/users/signIn");
         const userID = newUserDetails._id;
         const newCart = await new CartCLTN({
