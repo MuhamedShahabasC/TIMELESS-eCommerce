@@ -57,6 +57,6 @@ app.listen(PORT, (err) => {
   if (err) {
     console.log("Error starting server: " + err);
   } else {
-    console.log("Listening on http://52.196.157.73:8080");
+    console.log("Listening on https://timelesswatches.in");
   }
 });
