@@ -13,15 +13,22 @@ exports.view = async (req, res) => {
     const orderCount = recentOrders.length;
     const customerCount = await UserCLTN.countDocuments();
     const productCount = await productCLTN.countDocuments();
-    let totalRevenue = await orderCLTN.aggregate([
-      {
-        $group: {
-          _id: 0,
-          totalRevenue: { $sum: "$finalPrice" },
+    let totalRevenue;
+    if (customerCount) {
+      totalRevenue = await orderCLTN.aggregate([
+        {
+          $group: {
+            _id: 0,
+            totalRevenue: { $sum: "$finalPrice" },
+          },
         },
-      },
-    ]);
-    totalRevenue = totalRevenue[0].totalRevenue;
+      ]);
+      if (totalRevenue) {
+        totalRevenue = totalRevenue[0].totalRevenue;
+      }
+    } else {
+      totalRevenue = 0;
+    }
     res.render("admin/partials/dashboard", {
       recentOrders,
       moment,
