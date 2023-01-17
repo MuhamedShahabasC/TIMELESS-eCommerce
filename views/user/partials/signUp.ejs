@@ -113,13 +113,20 @@
   }
   function passwordValidator() {
     const inputPassword = $("#inputPassword").val();
-    if (inputPassword.match(/^(?=.*?[A-Za-z])(?=.*?[0-9]).{8,}$/)) {
-      $("#submitButton").css("pointer-events", "");
-      $("#passwordInvalid").empty();
+    if (inputPassword.length >= 8) {
+      if (inputPassword.match(/^(?=.*?[A-Za-z])(?=.*?[0-9]).{8,}$/)) {
+        $("#submitButton").css("pointer-events", "");
+        $("#passwordInvalid").empty();
+      } else {
+        $("#submitButton").css({ "pointer-events": "none" });
+        $("#passwordInvalid").html(
+          '<i class="fa fa-exclamation"></i>Password must contain atleast a number and an alphabet'
+        );
+      }
     } else {
       $("#submitButton").css({ "pointer-events": "none" });
       $("#passwordInvalid").html(
-        '<i class="fa fa-exclamation"></i>Password must contain atleast a number and an alphabet'
+        '<i class="fa fa-exclamation"></i>Password must be atleast 8 characters'
       );
     }
   }

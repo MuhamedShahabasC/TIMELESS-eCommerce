@@ -29,7 +29,6 @@ exports.userVerification = async (req, res) => {
       if (userFind.access == true) {
         if (hashedCheck) {
           req.session.userID = userFind._id;
-          // res.redirect("/");
           res.redirect("/");
         } else {
           res.render("user/partials/signIn", {

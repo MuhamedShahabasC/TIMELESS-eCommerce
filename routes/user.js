@@ -44,19 +44,15 @@ router.get("/addresses/delete", sessionCheck, address.deleteAddress);
 router.get("/addresses/changeRole", sessionCheck, address.defaultToggler);
 
 const cart = require("../controllers/user/cart");
-router.get("/cart", sessionCheck, cart.viewAll);
+router
+  .route("/cart")
+  .get(sessionCheck, cart.viewAll)
+  .post(sessionCheck, cart.addToCart)
+  .delete(sessionCheck, cart.remove);
 router
   .route("/cart/count")
   .put(sessionCheck, cart.addCount)
   .delete(sessionCheck, cart.reduceCount);
-
-router.get("/cart/addToCart/:id", sessionCheck, objectIdCheck, cart.addToCart);
-router.get(
-  "/cart/removeFromCart/:id",
-  sessionCheck,
-  objectIdCheck,
-  cart.remove
-);
 
 const checkout = require("../controllers/user/checkout");
 router

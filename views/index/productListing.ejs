@@ -24,6 +24,11 @@
         transition-delay: 0.2s; /* delays for 1 second */
         -webkit-transition-delay: 0.2s; /* for Safari & Chrome */
       }
+      .card:active {
+        box-shadow: rgba(17, 17, 26, 0.1) 0px 8px 24px,
+          rgba(17, 17, 26, 0.1) 0px 16px 56px,
+          rgba(17, 17, 26, 0.1) 0px 24px 80px;
+      }
     </style>
     <title>TIMELESS eCommerce</title>
   </head>
@@ -177,9 +182,9 @@
           </ul>
         </div>
       </div>
-      
+
       <div class="container text-center">
-        <div class="input-group flex-nowrap my-2 mx-auto" style="width: 250px;">
+        <div class="input-group flex-nowrap my-2 mx-auto" style="width: 250px">
           <input
             type="text"
             id="searchInput"

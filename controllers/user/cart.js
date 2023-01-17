@@ -21,21 +21,21 @@ exports.addToCart = async (req, res) => {
   try {
     const wishlistCheck = await wishlistCLTN.findOne({
       customer: req.session.userID,
-      products: mongoose.Types.ObjectId(req.params.id),
+      products: mongoose.Types.ObjectId(req.body.id),
     });
     if (wishlistCheck) {
       await wishlistCLTN.findByIdAndUpdate(wishlistCheck._id, {
         $pull: {
-          products: req.params.id,
+          products: req.body.id,
         },
       });
     }
-    const userCart = await cartCLTN.findOne({ user: req.session.userID });
-    const product = await productCLTN.findById(req.params.id);
+    const userCart = await cartCLTN.findOne({ customer: req.session.userID });
+    const product = await productCLTN.findById(req.body.id);
     const productExist = await cartCLTN.findOne({
       _id: userCart._id,
       products: {
-        $elemMatch: { name: mongoose.Types.ObjectId(req.params.id) },
+        $elemMatch: { name: mongoose.Types.ObjectId(req.body.id) },
       },
     });
     if (productExist) {
@@ -43,7 +43,7 @@ exports.addToCart = async (req, res) => {
         {
           _id: userCart._id,
           products: {
-            $elemMatch: { name: mongoose.Types.ObjectId(req.params.id) },
+            $elemMatch: { name: mongoose.Types.ObjectId(req.body.id) },
           },
         },
         {
@@ -55,12 +55,15 @@ exports.addToCart = async (req, res) => {
           },
         }
       );
+      res.json({
+        success: 'countAdded'
+      })
     } else {
       await cartCLTN.findByIdAndUpdate(userCart._id, {
         $push: {
           products: [
             {
-              name: mongoose.Types.ObjectId(req.params.id),
+              name: mongoose.Types.ObjectId(req.body.id),
               price: product.price,
             },
           ],
@@ -70,8 +73,10 @@ exports.addToCart = async (req, res) => {
           totalQuantity: 1,
         },
       });
+      res.json({
+        success: 'addedToCart'
+      })
     }
-    res.redirect("/products/" + product._id);
   } catch (error) {
     console.log("Error adding to cart: " + error);
   }
@@ -90,7 +95,7 @@ exports.remove = async (req, res) => {
       },
       {
         $match: {
-          "products.name": mongoose.Types.ObjectId(req.params.id),
+          "products.name": mongoose.Types.ObjectId(req.body.id),
         },
       },
     ]);
@@ -99,7 +104,7 @@ exports.remove = async (req, res) => {
     await cartCLTN.findByIdAndUpdate(cartID, {
       $pull: {
         products: {
-          name: req.params.id,
+          name: req.body.id,
         },
       },
       $inc: {
@@ -107,7 +112,7 @@ exports.remove = async (req, res) => {
         totalQuantity: -productFromCart.quantity,
       },
     });
-    res.redirect("/users/cart");
+    // res.redirect("/users/cart");
   } catch (error) {
     console.log("Error removing items from cart: " + error);
   }

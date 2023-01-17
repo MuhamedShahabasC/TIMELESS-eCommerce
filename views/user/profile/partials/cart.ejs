@@ -5,7 +5,7 @@
     <span class="shadow-heading">Your Cart</span>
   </div>
   <div class="row justify-content-center m-3">
-    <div class="col-lg-6">
+    <div class="col-lg-6" id="cart">
       <% if(userCart!= null && userCart.products.length!= 0){%> <%
       userCart.products.forEach((product,i) => {%>
       <div
@@ -32,68 +32,50 @@
           <div class="d-flex justify-content-end mt-2">
             <div class="counter d-flex p-1 align-items-center rounded mx-4">
               <button
-                class="btn btn-sm btn-light"
+                class="btn btn-sm btn-light button-div"
                 onclick='addCount("<%=product.name._id%>","<%=i%>")'
               >
-                <i class="fa fa-plus"></i>
+                <i class="fa fa-plus h-100"></i>
               </button>
               <span id="cartCount<%=i%>" class="fw-bold px-2"
                 ><%=product.quantity%></span
               >
 
-              <script>
-                function addCount(productID, i) {
-                  $.ajax({
-                    url: "/users/cart/count",
-                    method: "put",
-                    data: { id: productID },
-                    success: (res) => {
-                      $(`#cartCount${i}`).html(
-                        res.data.currentProduct.quantity
-                      );
-                      $(`#totalItems`).html(res.data.userCart.totalQuantity);
-                      $(`#totalPrice`).html(
-                        "₹ " + res.data.userCart.totalPrice
-                      );
-                    },
-                  });
-                }
-              </script>
-
               <button
-                class="btn btn-sm btn-light"
+                class="btn btn-sm btn-light button-div"
                 onclick='reduceCount("<%=product.name._id%>","<%=i%>")'
               >
                 <i class="fa fa-minus"></i>
               </button>
             </div>
             <div class="d-flex align-items-center">
-              <a
-                onclick="return confirm('Proceed to remove <%=product.name.name%>')"
-                href="/users/cart/removeFromCart/<%=product.name._id%>"
-                class="btn btn-secondary btn-sm text-white"
-                >Remove</a
-              >
+              <button class="btn button-div btn-sm text-white btn-dark">
+                <span
+                  style="font-size: 0.8rem; letter-spacing: 1px"
+                  onclick="removeFromCart('<%=product.name._id%>')"
+                  >Remove</span
+                >
+              </button>
             </div>
-            <script>
-              function reduceCount(productID, i) {
-                $.ajax({
-                  url: "/users/cart/count",
-                  method: "delete",
-                  data: { id: productID },
-                  success: (res) => {
-                    $(`#cartCount${i}`).html(res.data.currentProduct.quantity);
-                    $(`#totalItems`).html(res.data.userCart.totalQuantity);
-                    $(`#totalPrice`).html("₹ " + res.data.userCart.totalPrice);
-                  },
-                });
-              }
-            </script>
           </div>
         </div>
       </div>
       <%})%>
     </div>
+    <script>
+      function removeFromCart(productID) {
+        $.ajax({
+          url: "/users/cart",
+          method: "delete",
+          data: {
+            id: productID,
+          },
+          success: (res) => {
+            console.log(res.data)
+          }
+        });
+      }
+    </script>
     <div class="col-lg-4 my-3">
       <div
         class="order-summary rounded p-3 my-3 d-flex flex-column"
@@ -119,7 +101,7 @@
         <a
           href="/users/cart/checkout"
           type="submit"
-          class="text-white btn btn-dark btn-sm"
+          class="text-white btn btn-dark btn-sm button-div"
           >Proceed to checkout</a
         >
       </div>
@@ -134,5 +116,31 @@
     </div>
   </div>
 </div>
+<script>
+  function reduceCount(productID, i) {
+    $.ajax({
+      url: "/users/cart/count",
+      method: "delete",
+      data: { id: productID },
+      success: (res) => {
+        $(`#cartCount${i}`).html(res.data.currentProduct.quantity);
+        $(`#totalItems`).html(res.data.userCart.totalQuantity);
+        $(`#totalPrice`).html("₹ " + res.data.userCart.totalPrice);
+      },
+    });
+  }
 
+  function addCount(productID, i) {
+    $.ajax({
+      url: "/users/cart/count",
+      method: "put",
+      data: { id: productID },
+      success: (res) => {
+        $(`#cartCount${i}`).html(res.data.currentProduct.quantity);
+        $(`#totalItems`).html(res.data.userCart.totalQuantity);
+        $(`#totalPrice`).html("₹ " + res.data.userCart.totalPrice);
+      },
+    });
+  }
+</script>
 <%- include('../layouts/footer') %>
