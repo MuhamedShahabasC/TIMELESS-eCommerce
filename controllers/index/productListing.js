@@ -1,6 +1,6 @@
 const categoryCLTN = require("../../models/admin/category");
 const productCLTN = require("../../models/admin/product");
-
+const UserCLTN = require("../../models/user/details");
 
 exports.ourCollection = async (req, res) => {
   try {
