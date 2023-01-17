@@ -12,10 +12,13 @@ router
   .route("/products")
   .get(productListing.ourCollection)
   .patch(productListing.current)
-  .put(productListing.search)
+  .put(productListing.search);
 
-router.get('/categories/:id', productListing.categories)
+router.get("/categories/:id", productListing.categories);
 
-router.get("/products/:id", objectIdCheck, product.view);
+router
+  .route("/products/:id")
+  .get(objectIdCheck, product.view)
+  .patch(objectIdCheck, product.listedCheck);
 
 module.exports = router;

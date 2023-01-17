@@ -8,7 +8,7 @@ exports.viewAll = async (req, res) => {
     if (req.session.userID) {
       currentUser = await UserCLTN.findById(req.session.userID);
     }
-    const allProducts = await productCLTN.find().sort({ _id: -1 });
+    const allProducts = await productCLTN.find({listed: true}).sort({ _id: -1 });
     let men = [];
     let women = [];
     allProducts.forEach((product) => {

@@ -4,7 +4,10 @@ exports.viewAll = async (req, res) => {
   try {
     const userID = req.session.userID;
     const currentUser = await UserCLTN.findById(userID);
-    const allAddresses = currentUser.addresses;
+    let allAddresses = currentUser.addresses;
+    if (allAddresses == "") {
+      allAddresses = null;
+    }
     res.render("user/profile/partials/address", {
       documentTitle: "User Addresses",
       allAddresses,

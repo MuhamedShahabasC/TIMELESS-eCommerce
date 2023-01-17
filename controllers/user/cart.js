@@ -56,8 +56,9 @@ exports.addToCart = async (req, res) => {
         }
       );
       res.json({
-        success: 'countAdded'
-      })
+        success: "countAdded",
+        message: 1,
+      });
     } else {
       await cartCLTN.findByIdAndUpdate(userCart._id, {
         $push: {
@@ -74,8 +75,9 @@ exports.addToCart = async (req, res) => {
         },
       });
       res.json({
-        success: 'addedToCart'
-      })
+        success: "addedToCart",
+        message: 1,
+      });
     }
   } catch (error) {
     console.log("Error adding to cart: " + error);
@@ -113,8 +115,8 @@ exports.remove = async (req, res) => {
       },
     });
     res.json({
-      success: 'removed'
-    })
+      success: "removed",
+    });
   } catch (error) {
     console.log("Error removing items from cart: " + error);
   }

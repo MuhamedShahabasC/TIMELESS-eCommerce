@@ -25,7 +25,7 @@ exports.view = async (req, res) => {
         path: "customer",
         select: "name photo",
       });
-      const numberOfReviews = reviews.length
+    const numberOfReviews = reviews.length;
     reviews = reviews.slice(0, 6);
     if (reviews == "") {
       reviews = null;
@@ -37,9 +37,22 @@ exports.view = async (req, res) => {
       currentUser,
       productExistInWishlist,
       reviews,
-      numberOfReviews
+      numberOfReviews,
     });
   } catch (error) {
     console.log("Error rendering product page: " + error);
+  }
+};
+
+exports.listedCheck = async (req, res) => {
+  const productListedCheck = await productCLTN.findById(req.body.id);
+  if (productListedCheck.listed) {
+    res.json({
+      message: "listed",
+    });
+  } else {
+    res.json({
+      message: "unlisted",
+    });
   }
 };

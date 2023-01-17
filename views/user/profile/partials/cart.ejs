@@ -22,7 +22,7 @@
         <div
           class="col-lg-8 prod-details d-flex flex-grow-1 flex-column justify-content-between"
         >
-          <h5><%=product.name.name%></h5>
+          <h5><a href="/products/<%=product.name._id%>" style="color: black !important;"><%=product.name.name%></a></h5>
           <h6 class="text-secondary"><%=product.name.brand%></h6>
           <span
             style="text-transform: none; font-size: 0.85rem; font-weight: 700"
@@ -92,9 +92,9 @@
         >
       </div>
       <%}else{%>
-      <h4 class="text-center my-4 fw-light">No products on your cart yet.</h4>
+      <h5 class="text-center my-4 fw-light">No products on your cart yet.</h5>
       <div class="text-center my-4 fw-bold">
-        <a href="/" class="text-decoration-underline fst-italic"
+        <a href="/" class=" fst-italic"
           >Continue shopping <i class="fa fa-arrow-right"></i
         ></a>
       </div>
