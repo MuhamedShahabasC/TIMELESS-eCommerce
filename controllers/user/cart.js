@@ -112,7 +112,9 @@ exports.remove = async (req, res) => {
         totalQuantity: -productFromCart.quantity,
       },
     });
-    // res.redirect("/users/cart");
+    res.json({
+      success: 'removed'
+    })
   } catch (error) {
     console.log("Error removing items from cart: " + error);
   }

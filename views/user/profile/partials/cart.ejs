@@ -4,8 +4,8 @@
   <div class="line-break text-center py-4">
     <span class="shadow-heading">Your Cart</span>
   </div>
-  <div class="row justify-content-center m-3">
-    <div class="col-lg-6" id="cart">
+  <div class="row justify-content-center m-3" id="cart">
+    <div class="col-lg-6">
       <% if(userCart!= null && userCart.products.length!= 0){%> <%
       userCart.products.forEach((product,i) => {%>
       <div
@@ -33,19 +33,18 @@
             <div class="counter d-flex p-1 align-items-center rounded mx-4">
               <button
                 class="btn btn-sm btn-light button-div"
-                onclick='addCount("<%=product.name._id%>","<%=i%>")'
+                onclick='reduceCount("<%=product.name._id%>","<%=i%>")'
               >
-                <i class="fa fa-plus h-100"></i>
+                <i class="fa fa-minus"></i>
               </button>
               <span id="cartCount<%=i%>" class="fw-bold px-2"
                 ><%=product.quantity%></span
               >
-
               <button
                 class="btn btn-sm btn-light button-div"
-                onclick='reduceCount("<%=product.name._id%>","<%=i%>")'
+                onclick='addCount("<%=product.name._id%>","<%=i%>")'
               >
-                <i class="fa fa-minus"></i>
+                <i class="fa fa-plus h-100"></i>
               </button>
             </div>
             <div class="d-flex align-items-center">
@@ -62,20 +61,7 @@
       </div>
       <%})%>
     </div>
-    <script>
-      function removeFromCart(productID) {
-        $.ajax({
-          url: "/users/cart",
-          method: "delete",
-          data: {
-            id: productID,
-          },
-          success: (res) => {
-            console.log(res.data)
-          }
-        });
-      }
-    </script>
+
     <div class="col-lg-4 my-3">
       <div
         class="order-summary rounded p-3 my-3 d-flex flex-column"
@@ -139,6 +125,31 @@
         $(`#cartCount${i}`).html(res.data.currentProduct.quantity);
         $(`#totalItems`).html(res.data.userCart.totalQuantity);
         $(`#totalPrice`).html("₹ " + res.data.userCart.totalPrice);
+      },
+    });
+  }
+
+  function removeFromCart(productID) {
+    $.ajax({
+      url: "/users/cart",
+      method: "delete",
+      data: {
+        id: productID,
+      },
+      success: (res) => {
+        if (res.success === "removed") {
+          $("#cart").load(location.href + " #cart");
+          Swal.fire({
+            toast: true,
+            icon: "error",
+            position: "top-right",
+            showConfirmButton: false,
+            timer: 1000,
+            timerProgressBar: true,
+            animation: true,
+            title: "Removed from cart",
+          });
+        }
       },
     });
   }

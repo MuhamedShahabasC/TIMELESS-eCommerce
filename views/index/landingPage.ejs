@@ -25,6 +25,19 @@
         transition-delay: 0.2s; /* delays for 1 second */
         -webkit-transition-delay: 0.2s; /* for Safari & Chrome */
       }
+      .button-div:hover {
+        color: white !important;
+        font-weight: 400;
+        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
+          0 6px 20px 0 rgba(0, 0, 0, 0.19);
+        border: 1.4px solid white !important;
+      }
+      .button-div:active {
+        color: white !important;
+        font-weight: 400;
+        box-shadow: inset 0 6px 10px 0 rgba(0, 0, 0, 0.2),
+          0 6px 20px 0 rgba(0, 0, 0, 0.19);
+      }
     </style>
   </head>
   <body>
@@ -84,13 +97,34 @@
             <span class="nav-item nav-link text-center mb-2 mb-lg-0 mx-3">
               <a class="nav-link" href="/users/cart">Cart</a>
             </span>
+
             <span class="nav-item nav-link text-center mb-2 mb-lg-0 ms-lg-3">
               <% if(session){%>
-
-              <div class="btn-group dropstart">
+              <div class="d-block d-lg-none">
+                <hr />
+                <span class="nav-item nav-link text-center mb-2 mb-lg-0 mx-3">
+                  <a class="nav-link fw-bold" href="/users/profile"
+                    ><img
+                      src="/Public/img/users/<%=locals.currentUser.photo%>"
+                      height="25px"
+                      alt=""
+                      class="mx-2"
+                    /><%=locals.currentUser.name%></a
+                  >
+                </span>
+                <span class="nav-item nav-link text-center mb-2 mb-lg-0 mx-3">
+                  <a
+                    class="nav-link"
+                    style="font-size: 0.85rem"
+                    href="/users/signOut"
+                    >Sign out</a
+                  >
+                </span>
+              </div>
+              <div class="btn-group dropstart d-none d-lg-block">
                 <button
                   type="button"
-                  class="btn btn-light dropdown-toggle"
+                  class="btn dropdown-toggle button-div"
                   data-bs-toggle="dropdown"
                   aria-expanded="false"
                   style="
@@ -100,24 +134,34 @@
                     font-weight: 600;
                   "
                 >
-                  <%=locals.currentUser.name%>
+                  <img
+                    src="/Public/img/users/<%=locals.currentUser.photo%>"
+                    height="25px"
+                    alt=""
+                  />
                 </button>
                 <ul class="dropdown-menu" style="font-size: 0.75rem">
+                  <li
+                    class="dropdown-item border-bottom"
+                    style="pointer-events: none"
+                  >
+                    <%=locals.currentUser.name%>
+                  </li>
                   <li>
                     <a class="dropdown-item" href="/users/profile">Profile</a>
                   </li>
                   <li>
                     <a class="dropdown-item" href="/users/orders">Orders</a>
                   </li>
-                  <li>
+                  <li class="border-bottom">
                     <a class="dropdown-item" href="/users/addresses">Address</a>
                   </li>
-                  <li><hr class="dropdown-divider" /></li>
                   <li>
                     <a class="dropdown-item" href="/users/signOut">Sign Out</a>
                   </li>
                 </ul>
               </div>
+
               <% }else{%>
               <a class="nav-link" href="/users/signIn">Sign In</a>
               <%}%>
@@ -242,7 +286,7 @@
       <%}%>
       <img
         class="w-100 my-3 rounded"
-        src="../../public/img/design/Banner.png"
+        src="../../public/img/design/Banner.jpg"
         alt=""
       />
 
@@ -346,7 +390,10 @@
           <i class="fab fa-whatsapp"></i>
         </span>
       </div>
-      <div class="copyright bg-theme py-2 text-center">
+      <div
+        class="copyright bg-theme py-2 text-center"
+        style="font-size: 0.85rem"
+      >
         <span
           >Copyright © 2022 | Timeless | Made by
           <a href="https://muhamedshahabas.github.io/"

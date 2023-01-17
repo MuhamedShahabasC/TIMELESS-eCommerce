@@ -1,14 +1,21 @@
 const categoryCLTN = require("../../models/admin/category");
 const productCLTN = require("../../models/admin/product");
 
+
 exports.ourCollection = async (req, res) => {
   try {
+    let currentUser = null;
+    if (req.session.userID) {
+      currentUser = await UserCLTN.findById(req.session.userID);
+    }
     let listing = req.session.listing;
     listingName = "Our Collection";
     if (!listing) {
       listing = await productCLTN.find({ listed: true });
     }
     res.render("index/productListing", {
+      session: req.session.userID,
+      currentUser,
       listing,
       documentTitle: "TIMELESS",
       listingName,
