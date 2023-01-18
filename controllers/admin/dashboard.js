@@ -82,6 +82,15 @@ exports.chartData = async (req, res) => {
         $sort: { "_id.month": 1 },
       },
     ]);
+    const pieData = await orderCLTN.aggregate([
+      {
+       $project: {
+        delivered: '$delivered',
+        status: '$status'
+       }
+      }
+    ])
+    console.log(pieData)
     res.json({
       data: orderData,
     });

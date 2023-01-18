@@ -115,7 +115,7 @@
       <input type="number" name="finalPrice" value="<%= userCart.totalPrice%>" id="inputFinalPrice" hidden>
     </div>
     <div class="order-summary rounded p-3 my-3 d-flex flex-column" style="border: 1px solid #dbdbdb; font-size: 0.9rem;">
-      <button type="submit" onclick="return confirm('Proceed to payment ?')" class="text-white btn btn-dark btn-sm" <% if(defaultAddress == 0){%>style="pointer-events: none;background-color: grey"<%}%>>Place Order</button>
+      <button type="submit" onclick="return confirm('Proceed to payment ?')" class="text-white btn btn-dark btn-sm" <% if(defaultAddress == 0){%>style="background-color: grey;" disabled<%}%>>Place Order</button>
     </div>
   </form>
   </div>

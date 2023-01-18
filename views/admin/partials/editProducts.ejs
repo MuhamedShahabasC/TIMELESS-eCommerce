@@ -1,83 +1,182 @@
 <%- include('../layouts/header') %> <%- include('../layouts/head-links') %>
-<div class="container" style="text-decoration: none">
-<form action="" method="post" enctype="multipart/form-data" class="container w-50 my-5">
-    <div class="mb-3">
+<div class="container " style="text-decoration: none">
+<form action="" method="post" enctype="multipart/form-data" class="container row flex-column my-5 mx-auto">
+    <div class="mb-3 col-lg-6">
+      <label for="name" class="px-1" style="font-size: 0.75rem;">Name</label>
       <input
         type="text"
         class="form-control"
-        id="form-holder"
+        id="name"
         value="<%= product.name %>"
-        name="<%= product.name %>"
+        name="name"
         placeholder="Name"
-        disabled
       />
     </div>
-    <div class="mb-3 d-flex flex-column">
-        <label for="HeroImage" class="px-1" style="font-size: 0.75rem;">Upload Hero Image</label>
-        <img class=" border" src="/public/img/products/<%=product.heroImage%>" width="150px"  alt="">
+    <div class="mb-3 col-lg-6 d-flex flex-column">
+        <label for="thumbnail" class="px-1" style="font-size: 0.75rem;">Upload Thumbnail</label>
+        <img class=" border" src="/Public/img/products/<%=product.thumbnail%>" width="150px"  alt="">
       <input
         class="form-control"
-        id="form-holder"
-        name="heroImage"
+        id="thumbnail"
+        name="thumbnail"
         type="file"
       />
     </div>
-    <div class="mb-3">
-      <select id="inputState" class="form-control" name="category" aria-valuenow="<%=product.category%>" required> 
-        <option selected>Choose category</option> 
+    <div class="mb-3 col-lg-6 d-flex flex-column">
+      <label for="frontImage" class="px-1" style="font-size: 0.75rem;">Upload front image</label>
+      <img class=" border" src="/Public/img/products/<%=product.frontImage%>" width="150px"  alt="">
+    <input
+      class="form-control"
+      id="frontImage"
+      name="frontImage"
+      type="file"
+    />
+  </div>
+  <div class="mb-3 col-lg-6 d-flex flex-column">
+    <label for="frontImage" class="px-1" style="font-size: 0.75rem;">Upload images (Only 3)</label>
+    <div class="row">
+      <%product.images.forEach((image)=>{%><img class="col-8 col-lg-4 border" src="/Public/img/products/<%=image%>" width="150px"  alt=""><%})%>
+    </div>
+  <input
+    class="form-control"
+    id="frontImage"
+    name="images"
+    type="file"
+    multiple
+  />
+</div>
+    <div class="mb-3 col-lg-6">
+      <select id="inputState" class="form-control" name="category"  required> 
+        <option value="<%=product.category._id%>" class="fw-bold" selected><%=product.category.name%></option> 
         <%categories.forEach((data)=>{%> 
           <option value="<%=data._id%>"><%=data.name%></option> 
         <%})%> 
       </select>
     </div>
-    <div class="mb-3">
+    <div class="mb-3 col-lg-6">
+    <label for="Brand" class="px-1" style="font-size: 0.75rem;">Brand</label>
       <input
         type="text"
         class="form-control"
-        id="form-holder"
+        id="Brand"
         placeholder="Brand"
         name="brand"
         value="<%= product.brand %>"
         required
       />
     </div>
-    <div class="mb-3">
-        <input
+    <div class="mb-3 col-lg-6">
+    <label for="Color" class="px-1" style="font-size: 0.75rem;">Color</label>  
+      <input
           type="text"
           class="form-control"
-          id="form-holder"
+          id="Color"
           placeholder="Color"
           name="color"
           value="<%= product.color %>"
           required
         />
       </div>
-    <div class="mb-3">
+    <div class="mb-3 col-lg-6">
+    <label for="Price" class="px-1" style="font-size: 0.75rem;">Price</label>  
         <input
           type="number"
           class="form-control"
-          id="form-holder"
+          id="Price"
           placeholder="Price"
           name="price"
           value="<%= product.price %>"
           required
         />
       </div>
-      <div class="mb-3">
+      <div class="mb-3 col-lg-6">
+    <label for="stock" class="px-1" style="font-size: 0.75rem;">Stock</label>  
         <input
           type="number"
           class="form-control"
-          id="form-holder"
+          id="stock"
           placeholder="Stock"
           name="stock"
           value="<%= product.stock %>"
           required
         />
       </div>
+      <div class="mb-3 col-lg-6">
+    <label for="refNumber" class="px-1" style="font-size: 0.75rem;">Reference Number</label>  
+    <input
+          type="number"
+          class="form-control"
+          id="refNumber"
+          placeholder="Reference Number"
+          name="referenceNumber"
+          value="<%=product.referenceNumber%>"
+          required
+        />
+      </div>
+      <div class="mb-3 col-lg-6">
+    <label for="modelCase" class="px-1" style="font-size: 0.75rem;">Model Case</label>  
+    <input
+          type="text"
+          class="form-control"
+          id="modelCase"
+          placeholder="Model Case"
+          name="modelCase"
+          value="<%= product.modelCase %>"
+          required
+        />
+      </div>
+      <div class="mb-3 col-lg-6">
+    <label for="waterRes" class="px-1" style="font-size: 0.75rem;">Water Resistance</label>  
+    <input
+          type="text"
+          class="form-control"
+          id="waterRes"
+          value="<%=product.waterResistance%>"
+          placeholder="Water Resistance"
+          name="waterResistance"
+          required
+        />
+      </div>
+      <div class="mb-3 col-lg-6">
+        <label for="powerRes" class="px-1" style="font-size: 0.75rem;">Power Resistance</label>  
+        <input
+              type="text"
+              class="form-control"
+              id="powerRes"
+              value="<%=product.powerReserve%>"
+              placeholder="Power Resistance"
+              name="powerReserve"
+              required
+            />
+          </div>
+      <div class="mb-3 col-lg-6">
+    <label for="movement" class="px-1" style="font-size: 0.75rem;">Movement</label>  
+    <input
+          type="text"
+          class="form-control"
+          value="<%= product.movement %>"
+          id="movement"
+          placeholder="Movement"
+          name="movement"
+          required
+        />
+      </div>
+      <div class="mb-3 col-lg-6">
+    <label for="bracelet" class="px-1" style="font-size: 0.75rem;">Bracelet</label>  
+    <input
+          type="text"
+          value="<%= product.bracelet %>"
+          class="form-control"
+          id="bracelet"
+          placeholder="Bracelet"
+          name="bracelet"
+          required
+        />
+      </div>
       <div class="float-end mb-5">
-        <a href="/admin/product_management" onclick="return confirm('Discard Changes ?')" class="btn btn-secondary text-white">Cancel</a>
-        <button type="submit" class="btn btn-success">
-          Save changes
+        <a href="/admin/product_management" onclick="return confirm('Discard Changes ?')" class="btn btn-secondary text-white my-1">Cancel</a>
+        <button type="submit" class="btn btn-success my-1">
+          <span>Save changes</span>
         </button>
         </form>
       </div>

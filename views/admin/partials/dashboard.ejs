@@ -77,7 +77,9 @@
   </div>
 </div>
 <div class="container">
-  <div class="row my-3">
+  <h6 class="text-center my-2" >Sales Analytics - <%let currentYear = new Date();%>
+    <%currentYear = currentYear.getFullYear();%><%=currentYear%></h6>
+  <div class="row my-3" id="charts">
     <div class="col-lg-6">
       
       <canvas id="myChart"></canvas>
@@ -86,12 +88,15 @@
       <canvas id="myChart2"></canvas>
     </div>
   </div>
-
+  <h6 class="text-center" >Order Status</h6>
+  <div class="col-lg-4 mx-auto">
+    <canvas id="myChart3"></canvas>
+  </div>
  
 </div>
 
 <!-- Table -->
-<div class="container  my-5 w-75">
+<div class="container  my-5" style="max-width: 1100px" >
   <h6 class="text-center" >Recent Orders</h6>
   <%if(recentOrders){%>
     <table class="table table-hover cell-border fw-light nowrap" id="dataTable" style="width: 100%;">
@@ -124,12 +129,11 @@
         </tr>
         <%})%>
       </tbody>
-      <tfoot></tfoot>
     </table>
     <%}%>
 </div>
-
-
+<!-- <input id="chartYear" type="number" min="2023" max="2050" step="1" value="2023" />
+<button  onclick="chartYear()" class="btn btn-dark btn-sm">Change Year</button> -->
 </section>
 
 <footer class="bg-theme">
@@ -205,6 +209,46 @@
             },
           },
         });
+        const inTransit= 5
+        const cancelled = 0
+        const delivered = 3
+        const ctz = document.getElementById("myChart3");
+        new Chart(ctz, {
+         type: 'doughnut',
+          data: {
+            labels: [
+              'In-Transit',
+              'Delivered',
+              'Cancelled'
+            ],
+            datasets: [{
+              label: 'Order Status',
+              data: [inTransit, delivered, cancelled],
+              backgroundColor: [
+              'rgb(255, 205, 86,0.9)',
+                'rgb(34,139,34,0.9)',
+                'rgb(255,80,66,0.9)'
+              ],
+              hoverOffset: 10
+            }]
+          },
+          options : {
+              scales: {
+                  xAxes: [{
+                      gridLines: {
+                          display:false
+                      }
+                  }],
+                  yAxes: [{
+                      gridLines: {
+                          display:false
+                      }   
+                  }]
+              }
+          }
+        });
+
+
         const cty = document.getElementById("myChart2");
         new Chart(cty, {
           type: "bar",

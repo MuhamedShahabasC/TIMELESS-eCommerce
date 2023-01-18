@@ -56,17 +56,17 @@
                         <label for="thumbnail" class="px-1" style="font-size: 0.75rem;">Upload thumbnail</label>
                       <input
                         class="form-control"
-                        id="form-holder"
+                        id="thumbnail"
                         name="thumbnail"
                         type="file"
                         required
                       />
                     </div>
                     <div class="mb-3">
-                      <label for="HeroImage" class="px-1" style="font-size: 0.75rem;">Upload Front Image</label>
+                      <label for="frontImage" class="px-1" style="font-size: 0.75rem;">Upload Front Image</label>
                     <input
                       class="form-control"
-                      id="form-holder"
+                      id="frontImage"
                       name="frontImage"
                       type="file"
                       required
@@ -83,7 +83,7 @@
                     />
                   </div>
                     <div class="mb-3">
-                      <select id="inputState" class="form-control" name="categoryID"> 
+                      <select id="inputState" class="form-control" name="category"> 
                         <option selected>Choose category</option> 
                         <%categories.forEach((data)=>{%> 
                           <option value="<%=data._id%>"><%=data.name%></option> 
@@ -94,7 +94,7 @@
                       <input
                         type="text"
                         class="form-control"
-                        id="form-holder"
+                        id="brand"
                         placeholder="Brand"
                         name="brand"
                         required
@@ -104,7 +104,7 @@
                         <input
                           type="text"
                           class="form-control"
-                          id="form-holder"
+                          id="color"
                           placeholder="Color"
                           name="color"
                           required
@@ -114,7 +114,7 @@
                         <input
                           type="number"
                           class="form-control"
-                          id="form-holder"
+                          id="price"
                           placeholder="Price"
                           name="price"
                           required
@@ -124,7 +124,7 @@
                         <input
                           type="number"
                           class="form-control"
-                          id="form-holder"
+                          id="stock"
                           placeholder="Stock"
                           name="stock"
                           required
@@ -134,9 +134,9 @@
                         <input
                           type="number"
                           class="form-control"
-                          id="form-holder"
+                          id="referenceNumber"
                           placeholder="Reference Number"
-                          name="refNumber"
+                          name="referenceNumber"
                           required
                         />
                       </div>
@@ -144,7 +144,7 @@
                         <input
                           type="text"
                           class="form-control"
-                          id="form-holder"
+                          id="modelCase"
                           placeholder="Model Case"
                           name="modelCase"
                           required
@@ -154,9 +154,9 @@
                         <input
                           type="text"
                           class="form-control"
-                          id="form-holder"
+                          id="waterResistance"
                           placeholder="Water Resistance"
-                          name="waterRes"
+                          name="waterResistance"
                           required
                         />
                       </div>
@@ -164,7 +164,7 @@
                         <input
                           type="text"
                           class="form-control"
-                          id="form-holder"
+                          id="movement"
                           placeholder="Movement"
                           name="movement"
                           required
@@ -174,9 +174,9 @@
                         <input
                           type="text"
                           class="form-control"
-                          id="form-holder"
+                          id="powerReserve"
                           placeholder="Power Reserve"
-                          name="powerRes"
+                          name="powerReserve"
                           required
                         />
                       </div>
@@ -184,7 +184,7 @@
                         <input
                           type="text"
                           class="form-control"
-                          id="form-holder"
+                          id="bracelet"
                           placeholder="Bracelet"
                           name="bracelet"
                           required
@@ -217,12 +217,11 @@
         <table id="dataTable" class="table table-hover cell-border fw-light nowrap">
           <thead>
             <tr>
-              <th>No.</th>
               <th>Name</th>
               <th>Image</th>
               <th>Category</th>
               <th>Brand</th>
-              <th>Price ₹ x1000</th>
+              <th>Price ₹</th>
               <th>Stock</th>
               <th>Action</th>
             </tr>
@@ -231,20 +230,22 @@
           <tbody>
             <% products.forEach(function(item,i){ %>
             <tr>
-              <td><%= i+1 %></td>
               <td><%= item.name %></td>
-              <td class="text-center"><img src="/public/img/products/<%= item.heroImage %>" alt="" width="120px" height="80px"></td>
+              <td class="text-center"><img src="/Public/img/products/<%= item.thumbnail %>" alt="" width="80px" height="100px"></td>
               <td><%= item.category.name %></td>
               <td><%= item.brand %></td>
               <td><%= item.price %></td>
               <td><%= item.stock %></td>
-              <td class="text-center d-flex flex-column">
-                <a href="/admin/product_management/edit?id=<%= item._id %>" onclick="return confirm('Proceed to edit <%= item.name %> ?')" class="btn btn-dark text-white btn-sm my-1">Edit</a>
+              <td >
+                <div class="text-center d-flex flex-column">
+                  <a href="/admin/product_management/edit?id=<%= item._id %>" onclick="return confirm('Proceed to edit <%= item.name %> ?')" class="btn btn-dark text-white btn-sm my-1">Edit</a>
                 <% if(item.listed==true){ %> 
                 <a href="/admin/product_management/changeListing?id=<%= item._id %>" onclick="return confirm('Proceed to change listing of <%= item.name %> ?')" class="btn btn-danger text-white btn-sm  my-1">Unlist</a>
               <% }else{ %>
                 <a href="/admin/product_management/changeListing?id=<%= item._id %>" onclick="return confirm('Proceed to change listing of <%= item.name %> ?')" class="btn btn-success text-white btn-sm my-1">List</a>
-                <% } %></td>
+                <% } %>
+                </div>
+              </td>
             </tr>
             <% }) %>
           </tbody>

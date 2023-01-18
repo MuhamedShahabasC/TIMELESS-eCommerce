@@ -24,11 +24,13 @@ exports.addProduct = async (req, res) => {
       .toFormat("png")
       .png({ quality: 80 })
       .toFile(`public/img/products/${frontImage}`);
+    req.body.frontImage = frontImage;
     let thumbnail = `${req.body.name}_thumbnail_${Date.now()}.png`;
     sharp(req.files.thumbnail[0].buffer)
       .toFormat("png")
       .png({ quality: 80 })
       .toFile(`public/img/products/${thumbnail}`);
+    req.body.thumbnail = thumbnail;
     const newImages = [];
     for (i = 0; i < 3; i++) {
       imageName = `${req.body.name}_image${i}_${Date.now()}.png`;
@@ -38,23 +40,9 @@ exports.addProduct = async (req, res) => {
         .toFile(`public/img/products/${imageName}`);
       newImages.push(imageName);
     }
-    const newProduct = new productCLTN({
-      name: req.body.name,
-      frontImage: frontImage,
-      thumbnail: thumbnail,
-      category: mongoose.Types.ObjectId(req.body.categoryID),
-      images: newImages,
-      brand: req.body.brand,
-      price: req.body.price,
-      stock: req.body.stock,
-      color: req.body.color,
-      referenceNumber: req.body.refNumber,
-      modelCase: req.body.modelCase,
-      waterResistance: req.body.waterRes,
-      movement: req.body.movement,
-      powerReserve: req.body.powerRes,
-      bracelet: req.body.bracelet,
-    });
+    req.body.images = newImages;
+    req.body.category = mongoose.Types.ObjectId(req.body.category);
+    const newProduct = new productCLTN(req.body);
     await newProduct.save();
     console.log("Product added successfully");
     res.redirect("/admin/product_management");
@@ -65,7 +53,9 @@ exports.addProduct = async (req, res) => {
 
 exports.editPage = async (req, res) => {
   try {
-    const currentProduct = await productCLTN.findById(req.query.id);
+    const currentProduct = await productCLTN
+      .findById(req.query.id)
+      .populate("category");
     const categories = await categoriesCLTN.find({});
     res.render("admin/partials/editProducts", {
       documentTitle: "Edit Product | TIMELESS",
@@ -79,16 +69,40 @@ exports.editPage = async (req, res) => {
 
 exports.edit = async (req, res) => {
   try {
-    const currentProduct = await productCLTN.findById(req.query.id);
-    await productCLTN.findByIdAndUpdate(currentProduct._id, {
-      name: req.body.name,
-      heroImage: req.file.filename,
-      category: req.body.category,
-      brand: req.body.brand,
-      price: req.body.price,
-      stock: req.body.stock,
-      color: req.body.color,
-    });
+    if (JSON.stringify(req.files) !== "{}") {
+      console.log("req.files", req.files);
+      if (req.files.frontImage) {
+        let frontImage = `${req.body.name}_frontImage_${Date.now()}.png`;
+        sharp(req.files.frontImage[0].buffer)
+          .toFormat("png")
+          .png({ quality: 80 })
+          .toFile(`public/img/products/${frontImage}`);
+        req.body.frontImage = frontImage;
+      }
+      console.log(req.body);
+      if (req.files.thumbnail) {
+        let thumbnail = `${req.body.name}_thumbnail_${Date.now()}.png`;
+        sharp(req.files.thumbnail[0].buffer)
+          .toFormat("png")
+          .png({ quality: 80 })
+          .toFile(`public/img/products/${thumbnail}`);
+        req.body.thumbnail = thumbnail;
+      }
+      if (req.files.images) {
+        const newImages = [];
+        for (i = 0; i < 3; i++) {
+          imageName = `${req.body.name}_image${i}_${Date.now()}.png`;
+          sharp(req.files.images[i].buffer)
+            .toFormat("png")
+            .png({ quality: 80 })
+            .toFile(`public/img/products/${imageName}`);
+          newImages.push(imageName);
+        }
+        req.body.images = newImages;
+      }
+    }
+    req.body.category = mongoose.Types.ObjectId(req.body.category);
+    await productCLTN.findByIdAndUpdate(req.query.id, req.body);
     console.log("Product edited successfully");
     res.redirect("/admin/product_management");
   } catch (error) {

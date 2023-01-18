@@ -24,6 +24,10 @@ const orderShema = mongoose.Schema({
     contactNumber: Number,
   },
   delivered: { type: Boolean, default: false },
+  status: {
+    type: String,
+    default: "In-transit",
+  },
   modeOfPayment: String,
   couponUsed: { type: mongoose.Types.ObjectId, ref: "Coupon" },
   price: Number,
