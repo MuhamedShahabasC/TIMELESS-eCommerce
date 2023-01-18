@@ -92,7 +92,8 @@
   <div class="col-lg-4 mx-auto">
     <canvas id="myChart3"></canvas>
   </div>
- 
+  
+  <a class="btn btn-sm btn-dark text-center" href="/admin/salesReport">Recent Orders</a>
 </div>
 
 <!-- Table -->
@@ -116,15 +117,24 @@
           <td><%=order._id%></td>
           <td><%=order.customer.email%></td>
           <td><%= order.finalPrice %></td>
-          <td><% if (order.delivered != true) {%>
-              <i class="fa fa-truck text-warning"></i><span>In Transit</span>
-            <%}else{%>
-            <span
-              ><i class="fa fa-check text-success"></i
-              ><span>Delivered</span> <%} %> <br /><% if (order.delivered ==
-              true) {%>
-              <span><%=moment(order.deliveredOn).format('lll')%></span>
-              <%}%></span</td>
+          <td class="text-center" style="width: 20%">
+            <div>
+              <%if(order.status === 'In-transit'){%>
+                <% if (order.delivered != true) {%>
+                  <span>In-transit</span>
+                  <%}else{%>
+                  <span
+                    ><i class="fa fa-check text-success"></i
+                    ><span>Delivered</span> <%} %> <br /><% if (order.delivered ==
+                    true) {%>
+                    <span><%=moment(order.deliveredOn).format('lll')%></span>
+                    <%}%></span
+                  >
+                <%} else {%>
+                  <%=order.status%>
+                  <%}%>
+              </div>
+          </td>
           <td><%= order.modeOfPayment %></td>
         </tr>
         <%})%>
@@ -155,7 +165,7 @@
       url: "/admin/dashboard",
       method: "PUT",
       success: (res) => {
-        var orderData = res.data;
+        var orderData = res.data.orderData;
         let totalOrders = [];
         let revenuePerMonth = [];
         let avgBillPerOrder = [];
@@ -209,9 +219,11 @@
             },
           },
         });
-        const inTransit= 5
-        const cancelled = 0
-        const delivered = 3
+
+
+        const inTransit= res.data.inTransit
+        const cancelled = res.data.cancelled
+        const delivered = res.data.delivered
         const ctz = document.getElementById("myChart3");
         new Chart(ctz, {
          type: 'doughnut',
@@ -224,6 +236,7 @@
             datasets: [{
               label: 'Order Status',
               data: [inTransit, delivered, cancelled],
+
               backgroundColor: [
               'rgb(255, 205, 86,0.9)',
                 'rgb(34,139,34,0.9)',

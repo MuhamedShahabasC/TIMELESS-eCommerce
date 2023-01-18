@@ -7,7 +7,6 @@ exports.view = async (req, res) => {
   try {
     const recentOrders = await orderCLTN
       .find()
-      .limit(20)
       .sort({ _id: -1 })
       .populate({ path: "customer", select: "email" });
     const orderCount = recentOrders.length;
@@ -36,6 +35,7 @@ exports.view = async (req, res) => {
       customerCount,
       productCount,
       totalRevenue,
+      documentTitle: 'Admin Dashboard | TIMELESS'
     });
   } catch (error) {
     console.log("Error rendering dashboard: " + error);
@@ -82,17 +82,34 @@ exports.chartData = async (req, res) => {
         $sort: { "_id.month": 1 },
       },
     ]);
-    const pieData = await orderCLTN.aggregate([
+    const deliveredOrderes = await orderCLTN
+      .find({ delivered: true })
+      .countDocuments();
+    let notDelivered = await orderCLTN.aggregate([
       {
-       $project: {
-        delivered: '$delivered',
-        status: '$status'
-       }
+        $match: {
+          delivered: false,
+        },
+      },
+      {
+        $group: {
+          _id: "$status",
+          status: { $sum: 1 },
+        },
+      },
+    ]);
+    let inTransit;
+    let cancelled;
+    notDelivered.forEach((order) => {
+      if (order._id === "In-transit") {
+        inTransit = order.status;
+      } else if (order._id === "Cancelled") {
+        cancelled = order.status;
       }
-    ])
-    console.log(pieData)
+    });
+    const delivered = deliveredOrderes;
     res.json({
-      data: orderData,
+      data: { orderData, inTransit, cancelled, delivered },
     });
   } catch (error) {
     console.log("Error creating chart data: " + error);

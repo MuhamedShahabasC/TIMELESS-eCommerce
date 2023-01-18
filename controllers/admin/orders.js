@@ -5,11 +5,11 @@ exports.viewAll = async (req, res) => {
   try {
     const allOrders = await orderCLTN
       .find()
-      .sort({ orderedOn: -1 })
       .populate("customer", "name email")
       .populate("couponUsed", "name")
       .populate("summary.product", "category name brand price")
-      .populate("summary.product.category");
+      .populate("summary.product.category")
+      .sort({ _id: -1 });
     res.render("admin/partials/orders", {
       allOrders,
       documentTitle: "Orders | TIMELESS",

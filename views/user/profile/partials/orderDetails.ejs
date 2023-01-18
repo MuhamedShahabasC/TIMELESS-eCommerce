@@ -2,7 +2,7 @@
 <%- include('../layouts/user-links') %>
 
 <% if(currentOrder!=null){%>
-<div class="container">
+<div class="container" id="orderDetails">
   <div class="row mb-2 mt-4 rounded border p-3">
     <div class="col-lg-10 mx-auto" id="invoice">
         <a class="navbar-brand d-flex align-items-center justify-content-center mt-2 mb-4" href="/">
@@ -101,7 +101,7 @@
 
       </div>
       <div class="form-footer py-0 row justify-content-between">
-        <span class="col-lg-8 my-1" style="font-weight: 500">Devilered: <%if(currentOrder.delivered==true){%><%=moment(currentOrder.orderedOn).format('MMMM Do YYYY, h:mm:ss a')%><%}else{%><b>Not yet delivered</b><%}%></span>
+        <span class="col-lg-8 my-1" style="font-weight: 500">Order Status: <%if(currentOrder.delivered==true){%>Delivered on <%=moment(currentOrder.orderedOn).format('MMMM Do YYYY, h:mm:ss a')%><%}else{%><b><%=currentOrder.status%></b><%}%></span>
         
     </div>
   </div>
@@ -110,11 +110,39 @@
     <a href="/users/orders" style="font-size: 0.7rem;" class="col-3 btn btn-dark d-flex align-items-center justify-content-center px-2 mb-3 text-white"
     ><i class="fa fa-arrow-left mx-1"></i> Back to all orders</a
   > 
+  <%if(currentOrder.status !== 'Cancelled'){%> <button style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2.5px;" class="col-3 btn btn-danger d-flex align-items-center justify-content-center px-2 mb-3 text-white"
+  onclick="cancelOrder('<%=currentOrder._id%>')">Cancel Order</button
+> <% }%>
   <button style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2.5px;" class="col-3 btn btn-dark d-flex align-items-center justify-content-center px-2 mb-3 text-white"
     onclick="printInvoice('invoice')"><i class="fa fa-download"></i>Download Invoice</button
   > 
 </div>
+</div>
+<%}%>
+
 <script>
+function cancelOrder(orderId){
+  $.ajax({
+    url: '/users/orders/' + orderId,
+    method: 'patch',
+    success: (res) => {
+      if(res.success === 'cancelled'){
+        $('#orderDetails').load(location.href + ' #orderDetails')
+        Swal.fire({
+            toast: true,
+            icon: "success",
+            position: "top-right",
+            showConfirmButton: false,
+            timer: 1000,
+            timerProgressBar: true,
+            animation: true,
+            title: "Order cancelled",
+          });
+      }
+    }
+  })
+}
+
     function printInvoice(divName) {
     var printContents = document.getElementById(divName).innerHTML;
     var originalContents = document.body.innerHTML;
@@ -127,6 +155,5 @@
 }
 </script>
 
-<%}%>
 
 <%- include('../layouts/footer') %>

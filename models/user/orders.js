@@ -34,7 +34,7 @@ const orderShema = mongoose.Schema({
   finalPrice: Number,
   discountPrice: { type: Number, default: 0 },
   orderedOn: { type: Date, default: Date.now() },
-  deliveredOn: { type: Date, default: Date.now() },
+  deliveredOn: { type: Date, default: null },
 });
 
 const orderCLTN = mongoose.model("Orders", orderShema);

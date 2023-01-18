@@ -87,4 +87,7 @@ router
   .patch(sessionCheck, banner.changeActivity)
   .delete(sessionCheck, banner.delete);
 
+const salesReport = require('../utilities/salesReport')
+router.route('/salesReport').get(salesReport.download)
+
 module.exports = router;

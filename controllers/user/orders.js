@@ -40,3 +40,15 @@ exports.details = async (req, res) => {
     console.log("Error showing order results: " + error);
   }
 };
+
+exports.cancel = async (req, res) => {
+  await orderCLTN.findByIdAndUpdate(req.params.id, {
+    $set: {
+      status: 'Cancelled',
+      deliveredOn: null
+    }
+  })
+  res.json({
+    success: 'cancelled'
+  })
+}

@@ -101,18 +101,21 @@
 
       </div>
       <div class="form-footer py-0 row justify-content-between">
-        <span class="col-lg-8 my-1" style="font-weight: 500">Devilered: <%if(currentOrder.delivered==true){%><%=currentOrder.orderedOn%><%}else{%><b>Not yet delivered</b><%}%></span>
-        
+        <span class="col-lg-8 my-1" style="font-weight: 500">Order Status: <%if(currentOrder.delivered==true){%>Delivered <%=moment(currentOrder.orderedOn).format('MMMM Do YYYY, h:mm:ss a')%><%}else{%><b><%=currentOrder.status%></b><%}%></span>
     </div>
   </div>
 </div>
 <div class="d-flex justify-content-around mt-2" >
-    <a href="/admin/orders" style="font-size: 0.7rem;" class="col-3 btn btn-dark d-flex align-items-center justify-content-center px-2 mb-3 text-white"
-    ><i class="fa fa-arrow-left mx-1"></i> Back to all orders</a
-  > 
-  <button style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2.5px;" class="col-3 btn btn-dark d-flex align-items-center justify-content-center px-2 mb-3 text-white"
-    onclick="printInvoice('invoice')"><i class="fa fa-download"></i>Download Invoice</button
-  > 
+  <a href="/admin/orders" style="font-size: 0.7rem;" class="col-3 btn btn-dark d-flex align-items-center justify-content-center px-2 mb-3 text-white"
+  ><i class="fa fa-arrow-left mx-1"></i> Back to all orders</a
+> 
+<%if(currentOrder.status !== 'Cancelled'){%> <button style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2.5px;" class="col-3 btn btn-danger d-flex align-items-center justify-content-center px-2 mb-3 text-white"
+onclick="cancelOrder('<%=currentOrder._id%>')">Cancel Order</button
+> <% }%>
+<button style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2.5px;" class="col-3 btn btn-dark d-flex align-items-center justify-content-center px-2 mb-3 text-white"
+  onclick="printInvoice('invoice')"><i class="fa fa-download"></i>Download Invoice</button
+> 
+</div>
 </div>
 <script>
     function printInvoice(divName) {

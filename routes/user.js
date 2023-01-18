@@ -76,7 +76,10 @@ router
 
 const orders = require("../controllers/user/orders");
 router.get("/orders", sessionCheck, orders.viewAll);
-router.get("/orders/:id", sessionCheck, objectIdCheck, orders.details);
+router
+  .route("/orders/:id")
+  .get(sessionCheck, objectIdCheck, orders.details)
+  .patch(sessionCheck, objectIdCheck, orders.cancel);
 
 const reviews = require("../controllers/user/reviews");
 router
