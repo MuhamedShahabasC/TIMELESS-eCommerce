@@ -104,6 +104,7 @@ exports.coupon = async (req, res) => {
               if (currentTime < coupon.expiryDate.toJSON()) {
                 discountPercentage = coupon.discount;
                 discountPrice = (discountPercentage / 100) * cartPrice;
+                discountPrice = Math.floor(discountPrice)
                 finalPrice = cartPrice - discountPrice;
                 couponCheck =
                   '<b>Coupon Applied <i class="fa fa-check text-success" aria-hidden="true"></i></b></br>' +
@@ -260,8 +261,8 @@ exports.checkout = async (req, res) => {
           payment_method: "paypal",
         },
         redirect_urls: {
-          return_url: `https://timelesswatches.in/users/cart/checkout/${transactionID}`,
-          cancel_url: "https://timelesswatches.in/users/cart/checkout",
+          return_url: `https://www.timelesswatches.in/users/cart/checkout/${transactionID}`,
+          cancel_url: "https://www.timelesswatches.in/users/cart/checkout",
         },
         transactions: [
           {
