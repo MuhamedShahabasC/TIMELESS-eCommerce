@@ -261,8 +261,8 @@ exports.checkout = async (req, res) => {
           payment_method: "paypal",
         },
         redirect_urls: {
-          return_url: `https://www.timelesswatches.in/users/cart/checkout/${transactionID}`,
-          cancel_url: "https://www.timelesswatches.in/users/cart/checkout",
+          return_url: `http://timelesswatches.in/users/cart/checkout/${transactionID}`,
+          cancel_url: "http://timelesswatches.in/users/cart/checkout",
         },
         transactions: [
           {
@@ -307,8 +307,8 @@ exports.checkout = async (req, res) => {
 
 exports.result = async (req, res) => {
   try {
-    console.log('Result page');
-    if (req.session.transactionID) {
+    // console.log('Result page');
+    // if (req.session.transactionID) {
       const couponUsed = req.session.couponUsed;
       req.session.transactionID = false;
       const orderDetails = new orderCLTN(req.session.orderDetails);
@@ -340,10 +340,10 @@ exports.result = async (req, res) => {
         documentTitle: orderResult,
         orderID: orderDetails._id,
       });
-    } else {
-      console.log('return fail')
-      res.redirect("/users/cart/checkout/");
-    }
+    // } else {
+    //   console.log('return fail')
+    //   res.redirect("/users/cart/checkout/");
+    // }
   } catch (error) {
     console.log("Error rendering success page: " + error);
   }
