@@ -18,7 +18,7 @@ app.use(
     name: "TIMELESS-Session",
     resave: false,
     saveUninitialized: true,
-    cookie: { secure: false },
+    cookie: { secure: true },
   })
 );
 
