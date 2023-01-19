@@ -4,46 +4,75 @@ const sessionCheck = require("../middlewares/user/sessionCheck");
 const objectIdCheck = require("../middlewares/user/objectIdCheck");
 const imageUpload = require("../utilities/imageUpload");
 const imageProcessor = require("../utilities/imageProcessor");
-
 const signUp = require("../controllers/user/signUp");
-router.get("/signUp", signUp.signUpPage);
-router.post("/signUp", signUp.registerUser);
-router.get("/otp_verification", signUp.otpPage);
-router.post("/otp_verification", signUp.otpVerification);
-
 const signIn = require("../controllers/user/signIn");
-router.get("/signIn", signIn.signInPage);
-router.post("/signIn", signIn.userVerification);
-
 const forgotPassword = require("../controllers/user/forgotPassword");
-router.get("/forgotPassword", forgotPassword.Page);
-router.post("/forgotPassword", forgotPassword.emailVerification);
+const profile = require("../controllers/user/profile");
+const address = require("./../controllers/user/address");
+const cart = require("../controllers/user/cart");
+const checkout = require("../controllers/user/checkout");
+const wishlist = require("../controllers/user/wishlist");
+const orders = require("../controllers/user/orders");
+const reviews = require("../controllers/user/reviews");
+const signOut = require("../controllers/user/signOut");
+
+// Sign Up
+router
+  .route("/signUp")
+  .get(signUp.signUpPage)
+  .post(signUp.registerUser);
+router
+  .route("/otp_verification")
+  .get(signUp.otpPage)
+  .post(signUp.otpVerification);
+
+// Sign In
+router
+  .route("/signIn")
+  .get(signIn.signInPage)
+  .post(signIn.userVerification);
+
+// Password Handlers
+router
+  .route("/forgotPassword")
+  .get(forgotPassword.Page)
+  .post(forgotPassword.emailVerification);
 router.get("/forgotPassword/otpVerification", forgotPassword.otpPage);
 router.get(
   "/forgotPassword/otpVerification/resend_OTP",
   forgotPassword.emailVerification
 );
 router.post("/forgotPassword/otpVerification", forgotPassword.otpVerification);
-router.get("/changePassword", forgotPassword.passwordChangePage);
-router.post("/changePassword", forgotPassword.updatePassword);
+router
+  .route("/changePassword")
+  .get(forgotPassword.passwordChangePage)
+  .post(forgotPassword.updatePassword);
 
-const profile = require("../controllers/user/profile");
-router.get("/profile", sessionCheck, profile.page);
-router.post(
-  "/profile",
-  sessionCheck,
-  imageUpload.single("photo"),
-  imageProcessor.userProfilePic,
-  profile.update
-);
+// Profile
+router
+  .route("/profile")
+  .get(sessionCheck, profile.page)
+  .post(
+    sessionCheck,
+    imageUpload.single("photo"),
+    imageProcessor.userProfilePic,
+    profile.update
+  );
 
-const address = require("./../controllers/user/address");
+// Addresses
 router.get("/addresses", sessionCheck, address.viewAll);
 router.post("/addresses/addNew", sessionCheck, address.addNew);
 router.get("/addresses/delete", sessionCheck, address.deleteAddress);
 router.get("/addresses/changeRole", sessionCheck, address.defaultToggler);
 
-const cart = require("../controllers/user/cart");
+// Wishlist
+router
+  .route("/wishlist")
+  .get(sessionCheck, wishlist.viewAll)
+  .patch(wishlist.addOrRemove)
+  .delete(wishlist.remove);
+
+// Cart
 router
   .route("/cart")
   .get(sessionCheck, cart.viewAll)
@@ -54,7 +83,7 @@ router
   .put(sessionCheck, cart.addCount)
   .delete(sessionCheck, cart.reduceCount);
 
-const checkout = require("../controllers/user/checkout");
+// Checkout
 router
   .route("/cart/checkout")
   .get(sessionCheck, checkout.view)
@@ -67,27 +96,20 @@ router.post(
 );
 router.get("/cart/checkout/:id", sessionCheck, checkout.result);
 
-const wishlist = require("../controllers/user/wishlist");
-router
-  .route("/wishlist")
-  .get(sessionCheck, wishlist.viewAll)
-  .patch(wishlist.addOrRemove)
-  .delete(wishlist.remove);
-
-const orders = require("../controllers/user/orders");
+// Orders
 router.get("/orders", sessionCheck, orders.viewAll);
 router
   .route("/orders/:id")
   .get(sessionCheck, objectIdCheck, orders.details)
   .patch(sessionCheck, objectIdCheck, orders.cancel);
 
-const reviews = require("../controllers/user/reviews");
+// Reviews
 router
   .route("/reviews")
   .post(sessionCheck, reviews.addNew)
   .patch(reviews.helpful);
 
-const signOut = require("../controllers/user/signOut");
+// Sign out
 router.get("/signOut", sessionCheck, signOut.signOut);
 
 module.exports = router;
