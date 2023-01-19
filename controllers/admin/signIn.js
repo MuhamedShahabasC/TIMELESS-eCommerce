@@ -13,7 +13,7 @@ exports.page = (req, res) => {
 
 exports.verification = async (req, res) => {
   try {
-    const inputEmail = req.body.email;
+    const inputEmail = req.body.email.toLowerCase();
     const inputPassword = req.body.password;
     const adminFind = await adminCLTN.findOne({ email: inputEmail });
     if (adminFind) {

@@ -14,7 +14,8 @@ router
   .route("/products")
   .get(productListing.ourCollection)
   .patch(productListing.current)
-  .put(productListing.search);
+  .put(productListing.search)
+  .post(productListing.sortBy)
 router.get("/categories/:id", productListing.categories);
 
 // Single product Page

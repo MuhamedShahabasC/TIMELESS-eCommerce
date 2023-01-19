@@ -4,6 +4,9 @@
   font-family: "Inter", sans-serif;
   text-transform: uppercase;
 }
+html {
+  scroll-behavior: smooth;
+}
 td {
   text-transform: none !important;
 }

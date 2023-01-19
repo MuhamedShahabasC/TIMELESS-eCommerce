@@ -35,6 +35,9 @@ exports.current = async (req, res) => {
     } else {
       allProducts = listing;
     }
+    if (req.session.filtered) {
+      allProducts = await productCLTN.find({ listed: true });
+    }
     switch (req.body.filterBy) {
       case "men":
         currentFilter = allProducts.filter(
@@ -96,23 +99,72 @@ exports.search = async (req, res) => {
   }
 };
 
+exports.sortBy = async (req, res) => {
+  try {
+    if (!req.session.listing) {
+      req.session.listing = await productCLTN.find({ listed: true });
+    }
+    let listing = req.session.listing;
+    if (req.body.sortBy === "ascending") {
+      listing = listing.sort((a, b) => a.price - b.price);
+      req.session.listing = listing;
+      res.json({
+        message: "sorted",
+      });
+    } else if (req.body.sortBy === "descending") {
+      listing = listing.sort((a, b) => b.price - a.price);
+      req.session.listing = listing;
+      res.json({
+        message: "sorted",
+      });
+    } else if (req.body.sortBy === "newReleases") {
+      listing = listing.sort((a, b) => {
+        const idA = a._id.toString();
+        const idB = b._id.toString();
+        if (idA < idB) {
+          return 1;
+        }
+        if (idA > idB) {
+          return -1;
+        }
+        return 0;
+      });
+      req.session.listing = listing;
+      res.json({
+        message: "sorted",
+      });
+    }
+  } catch (error) {
+    console.log("Error sorting in our collection: " + error);
+  }
+};
+
 exports.categories = async (req, res) => {
   try {
+    let listing;
     if (req.params.id == "newReleases") {
-      const products = await productCLTN.find().sort({ _id: -1 });
+      if (req.session.listing) {
+        listing = req.session.listing;
+      } else {
+        listing = await productCLTN.find().sort({ _id: -1 });
+      }
       res.render("index/productListing", {
-        listing: products,
+        listing: listing,
         documentTitle: `New Releases | TIMELESS`,
         listingName: "New Releases",
       });
     } else {
       const currentCategory = await categoryCLTN.findById(req.params.id);
-      const categoryProducts = await productCLTN.find({
-        category: currentCategory._id,
-        listed: true,
-      });
+      if (req.session.listing) {
+        listing = req.session.listing;
+      } else {
+        listing = await productCLTN.find({
+          category: currentCategory._id,
+          listed: true,
+        });
+      }
       res.render("index/productListing", {
-        listing: categoryProducts,
+        listing: listing,
         documentTitle: `${currentCategory.name} | TIMELESS`,
         listingName: currentCategory.name,
       });
