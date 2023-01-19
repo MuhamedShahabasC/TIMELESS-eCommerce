@@ -18,6 +18,7 @@ app.use(
     name: "TIMELESS-Session",
     resave: false,
     saveUninitialized: true,
+    cookie: { secure: false },
   })
 );
 
@@ -41,12 +42,12 @@ app.use("/admin", adminRouter);
 // 404 Rendering
 const UserCLTN = require("./models/user/details");
 app.all("*", async (req, res) => {
-  const currentUser = await UserCLTN.findById(req.session.userID)
+  const currentUser = await UserCLTN.findById(req.session.userID);
   res.render("index/404", {
     documentTitle: "404 | Page not found",
     url: req.originalUrl,
     session: req.session.userID,
-    currentUser
+    currentUser,
   });
 });
 

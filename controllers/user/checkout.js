@@ -261,8 +261,8 @@ exports.checkout = async (req, res) => {
           payment_method: "paypal",
         },
         redirect_urls: {
-          return_url: `http://timelesswatches.in/users/cart/checkout/${transactionID}`,
-          cancel_url: "http://timelesswatches.in/users/cart/checkout",
+          return_url: `https://timelesswatches.in/users/cart/checkout/${transactionID}`,
+          cancel_url: "https://timelesswatches.in/users/cart/checkout",
         },
         transactions: [
           {
