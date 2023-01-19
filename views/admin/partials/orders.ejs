@@ -13,7 +13,7 @@
       <tr>
         <th>Order ID</th>
         <th>Customer</th>
-        <th>Bill</th>
+        <th style="width: 20%">Bill</th>
         <th style="width: 20%">Status</th>
         <th>Order Date</th>
       </tr>
@@ -29,7 +29,7 @@
           >
         </td>
         <td><%= item.customer.name %><br /><%= item.customer.email %></td>
-        <td>
+        <td style="width: 20%">
           <b>Bill:</b> <%= item.finalPrice %><br /><b>Discount Price:</b> <%=
           item.discountPrice %><br /><b>Price:</b> <%= item.price %>
         </td>
