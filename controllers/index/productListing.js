@@ -4,11 +4,11 @@ const UserCLTN = require("../../models/user/details");
 
 exports.ourCollection = async (req, res) => {
   try {
+    let listing = req.session.listing;
     let currentUser = null;
     if (req.session.userID) {
       currentUser = await UserCLTN.findById(req.session.userID);
     }
-    let listing = req.session.listing;
     listingName = "Our Collection";
     if (!listing) {
       listing = await productCLTN.find({ listed: true });

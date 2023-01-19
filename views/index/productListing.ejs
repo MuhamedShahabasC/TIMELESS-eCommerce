@@ -189,11 +189,11 @@
             <li>
               <span class="dropdown-item" onclick="filter('women')">Women</span>
             </li>
-            <li>
+            <!-- <li>
               <span class="dropdown-item" onclick="removeFilter('none')"
                 >NO Filter</span
               >
-            </li>
+            </li> -->
           </ul>
         </div>
 
@@ -246,15 +246,14 @@
             aria-describedby="addon-wrapping"
           />
           <span class="input-group-text" id="searchButton"
-            ><img
-              src="https://cdn-icons-png.flaticon.com/512/149/149852.png"
-              width="15px"
-              alt=""
-          /></span>
+            ><button class="btn bg-transparent btn-sm" style="font-size: 0.75rem" onclick="removeFilter('none')"
+            >All Products<br /></button
+          ></span>
         </div>
       </div>
 
       <div class="text-center p-o m-0">
+        
         <span style="font-size: 0.5rem"
           >Search by size.<br /><b>Mix and match</b> search, sort and
           filter.</span

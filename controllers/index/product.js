@@ -3,6 +3,7 @@ const UserCLTN = require("../../models/user/details");
 const wishlistCLTN = require("../../models/user/wishlist");
 const productListing = require("../../controllers/index/productListing");
 const ReviewCLTN = require("../../models/user/reviews");
+const moment = require('moment')
 
 exports.view = async (req, res) => {
   try {
@@ -38,6 +39,7 @@ exports.view = async (req, res) => {
       productExistInWishlist,
       reviews,
       numberOfReviews,
+      moment
     });
   } catch (error) {
     console.log("Error rendering product page: " + error);

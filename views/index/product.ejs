@@ -515,7 +515,10 @@
                               </div>
                               <h6 class="card-title"><%=reviews[i].review%></h6>
                               <p class="card-text" style="font-size: 0.65rem"><%=reviews[i].customer.name%></p>
-                              <img src="/public/img/users/<%=reviews[i].customer.photo%>" class="card-img-top w-25 rounded-2" alt="...">
+                              
+                              <p class="card-text" style="font-size: 0.65rem"><%=moment(reviews[i].createdAt).format('ll') %></p>
+                              
+                              <img src="/public/img/users/<%=reviews[i].customer.photo%>" class="card-img-top rounded-2 w-25" alt="...">
                             </div>
                           </div>
                           <%}%>
