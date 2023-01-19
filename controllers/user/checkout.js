@@ -307,7 +307,8 @@ exports.checkout = async (req, res) => {
 
 exports.result = async (req, res) => {
   try {
-    if (req.session.transactionID == req.params.id) {
+    console.log('Result page');
+    if (req.session.transactionID) {
       const couponUsed = req.session.couponUsed;
       req.session.transactionID = false;
       const orderDetails = new orderCLTN(req.session.orderDetails);
@@ -340,7 +341,8 @@ exports.result = async (req, res) => {
         orderID: orderDetails._id,
       });
     } else {
-      res.redirect("/");
+      console.log('return fail')
+      res.redirect("/users/cart/checkout/");
     }
   } catch (error) {
     console.log("Error rendering success page: " + error);

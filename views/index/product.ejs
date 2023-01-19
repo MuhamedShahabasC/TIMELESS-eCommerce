@@ -304,7 +304,7 @@
                 <p class="w-50 shadow-details"><%=productDetails.modelCase%></p>
               </div>
               <div class="buy-cart row text-center justify-content-around p-0">
-                  <div id="buyNow" class="button-div rounded col-5 border p-2  d-flex align-items-center justify-content-center" >
+                  <div id="buyNow" class="button-div rounded col-5 border p-2  d-flex align-items-center justify-content-center" onclick="buyNow()">
                     <span style="font-size: 0.8rem;">Buy Now</span>
                   </div>
                   <div id="addToCart" class="button-div rounded col-5 border p-2  d-flex align-items-center justify-content-center" onclick="addToCart('<%=productDetails._id%>')">
@@ -571,6 +571,9 @@
       </div>
     </footer>
     <script>
+      function buyNow(){
+        window.location.href = "/users/cart";
+      }
       function addToCart(productID){
       $.ajax({
         url: '/users/cart',

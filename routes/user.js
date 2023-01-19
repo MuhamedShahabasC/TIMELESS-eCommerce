@@ -94,7 +94,7 @@ router.post(
   sessionCheck,
   checkout.defaultAddress
 );
-router.get("/cart/checkout/:id", sessionCheck, checkout.result);
+router.get("/cart/checkout/:id",  checkout.result);
 
 // Orders
 router.get("/orders", sessionCheck, orders.viewAll);
