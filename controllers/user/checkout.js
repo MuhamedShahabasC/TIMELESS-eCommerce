@@ -104,7 +104,7 @@ exports.coupon = async (req, res) => {
               if (currentTime < coupon.expiryDate.toJSON()) {
                 discountPercentage = coupon.discount;
                 discountPrice = (discountPercentage / 100) * cartPrice;
-                discountPrice = Math.floor(discountPrice)
+                discountPrice = Math.floor(discountPrice);
                 finalPrice = cartPrice - discountPrice;
                 couponCheck =
                   '<b>Coupon Applied <i class="fa fa-check text-success" aria-hidden="true"></i></b></br>' +
@@ -307,8 +307,7 @@ exports.checkout = async (req, res) => {
 
 exports.result = async (req, res) => {
   try {
-    // console.log('Result page');
-    // if (req.session.transactionID) {
+    if (req.session.transactionID) {
       const couponUsed = req.session.couponUsed;
       req.session.transactionID = false;
       const orderDetails = new orderCLTN(req.session.orderDetails);
@@ -340,10 +339,9 @@ exports.result = async (req, res) => {
         documentTitle: orderResult,
         orderID: orderDetails._id,
       });
-    // } else {
-    //   console.log('return fail')
-    //   res.redirect("/users/cart/checkout/");
-    // }
+    } else {
+      res.redirect("/users/cart/checkout/");
+    }
   } catch (error) {
     console.log("Error rendering success page: " + error);
   }
