@@ -5,6 +5,7 @@ exports.page = async (req, res) => {
   try {
     const coupons = await couponCLTN.find();
     res.render("admin/partials/coupons", {
+      session: req.session.admin,
       documentTitle: "Coupon Management",
       coupons,
       moment,

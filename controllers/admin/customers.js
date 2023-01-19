@@ -5,6 +5,7 @@ exports.viewAll = async (req, res) => {
   try {
     const allCustomers = await UserCLTN.find().sort({ name: -1 });
     res.render("admin/partials/customers", {
+      session: req.session.admin,
       allCustomers,
       documentTitle: "Customer Management | TIMELESS",
     });

@@ -84,14 +84,21 @@
           class="container px-3 d-flex header-top-links justify-content-around"
         >
           <a class="px-3" href="/">Homepage</a>
-          <div class="d-none d-lg-block">
-            <span class="d-flex align-items-center">
-              <i class="fab fa-instagram"></i>
-              <i class="fab fa-facebook-f"></i>
-              <i class="fab fa-twitter"></i>
-              <i class="fab fa-whatsapp"></i>
-            </span>
-          </div>
+          <%if(locals.session){%>
+
+            <span><a href="/admin/signOut">Sign Out</a></span>
+
+       <%   } else {%>
+
+            <div class="d-none d-lg-block">
+              <span class="d-flex align-items-center">
+                <i class="fab fa-instagram"></i>
+                <i class="fab fa-facebook-f"></i>
+                <i class="fab fa-twitter"></i>
+                <i class="fab fa-whatsapp"></i>
+              </span>
+            </div>
+         <% } %>
         </div>
       </div>
       <nav

@@ -4,6 +4,7 @@ exports.list = async (req, res) => {
   try {
     const categories = await categoryCLTN.find({});
     res.render("admin/partials/categories", {
+      session: req.session.admin,
       documentTitle: "Category Management | TIMELESS",
       details: categories,
     });
@@ -41,6 +42,7 @@ exports.editPage = async (req, res) => {
     const categoryId = req.query.id;
     const currentCategory = await categoryCLTN.findById(categoryId);
     res.render("admin/partials/editCategory", {
+      session: req.session.admin,
       documentTitle: "Edit Category | TIMELESS",
       category: currentCategory,
     });
@@ -66,6 +68,7 @@ exports.editCategory = async (req, res) => {
       res.redirect("/admin/categories");
     } else {
       res.render("admin/partials/editCategory", {
+        session: req.session.admin,
         documentTitle: "Edit Category | TIMELESS",
         errorMessage: "Duplication of categories not allowed",
         category: null,

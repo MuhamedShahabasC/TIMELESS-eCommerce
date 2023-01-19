@@ -14,6 +14,7 @@ exports.viewAll = async (req, res) => {
       allOrders,
       documentTitle: "Orders | TIMELESS",
       moment,
+      session: req.session.admin,
     });
   } catch (error) {
     console.log("Error rendering all orders: " + error);
@@ -43,6 +44,7 @@ exports.details = async (req, res) => {
       .populate("summary.product")
       .populate("couponUsed");
     res.render("admin/partials/orderDetails", {
+      session: req.session.admin,
       currentOrder,
       moment,
       documentTitle: "Order Details | TIMELESS",

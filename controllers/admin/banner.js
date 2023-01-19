@@ -5,6 +5,7 @@ exports.viewAll = async (req, res) => {
   try {
     const allBanners = await BannerCLTN.find().sort({ _id: -1 });
     res.render("admin/partials/banner", {
+      session: req.session.admin,
       allBanners,
       documentTitle: "Banner Management | TIMESLESS",
     });

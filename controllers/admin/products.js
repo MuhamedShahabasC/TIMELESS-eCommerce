@@ -11,6 +11,7 @@ exports.page = async (req, res) => {
       documentTitle: "Product Management | TIMELESS",
       categories: allCategories,
       products: allProducts,
+      session: req.session.admin,
     });
   } catch (error) {
     console.log("Product Page rendering error: " + error);
@@ -58,6 +59,7 @@ exports.editPage = async (req, res) => {
       .populate("category");
     const categories = await categoriesCLTN.find({});
     res.render("admin/partials/editProducts", {
+      session: req.session.admin,
       documentTitle: "Edit Product | TIMELESS",
       product: currentProduct,
       categories: categories,

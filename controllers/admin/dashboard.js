@@ -29,6 +29,7 @@ exports.view = async (req, res) => {
       totalRevenue = 0;
     }
     res.render("admin/partials/dashboard", {
+      session: req.session.admin,
       recentOrders,
       moment,
       orderCount,
