@@ -104,7 +104,7 @@ exports.coupon = async (req, res) => {
               if (currentTime < coupon.expiryDate.toJSON()) {
                 discountPercentage = coupon.discount;
                 discountPrice = (discountPercentage / 100) * cartPrice;
-                discountPrice = Math.floor(discountPrice);
+                discountPrice = Math.floor(discountPrice)
                 finalPrice = cartPrice - discountPrice;
                 couponCheck =
                   '<b>Coupon Applied <i class="fa fa-check text-success" aria-hidden="true"></i></b></br>' +
