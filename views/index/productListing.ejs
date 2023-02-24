@@ -17,22 +17,12 @@
       rel="stylesheet"
       href="https://use.fontawesome.com/releases/v5.0.7/css/all.css"
     />
-    <style>
-      html {
-        scroll-behavior: smooth;
-      }
-      .card:hover {
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2),
-          0 6px 20px 0 rgba(0, 0, 0, 0.19);
-        transition-delay: 0.2s; /* delays for 1 second */
-        -webkit-transition-delay: 0.2s; /* for Safari & Chrome */
-      }
-      .card:active {
-        box-shadow: rgba(17, 17, 26, 0.1) 0px 8px 24px,
-          rgba(17, 17, 26, 0.1) 0px 16px 56px,
-          rgba(17, 17, 26, 0.1) 0px 24px 80px;
-      }
-    </style>
+    <link rel="stylesheet" href="/public/stylesheets/landingPage.css" />
+    <link
+      rel="shortcut icon"
+      type="image/jpg"
+      href="/public/img/timeless-favicon.png"
+    />
     <title>TIMELESS eCommerce</title>
   </head>
   <body>
@@ -246,14 +236,17 @@
             aria-describedby="addon-wrapping"
           />
           <span class="input-group-text" id="searchButton"
-            ><button class="btn bg-transparent btn-sm" style="font-size: 0.75rem" onclick="removeFilter('none')"
-            >All Products<br /></button
+            ><button
+              class="btn bg-transparent btn-sm"
+              style="font-size: 0.75rem"
+              onclick="removeFilter('none')"
+            >
+              All Products<br /></button
           ></span>
         </div>
       </div>
 
       <div class="text-center p-o m-0">
-        
         <span style="font-size: 0.5rem"
           >Search by size.<br /><b>Mix and match</b> search, sort and
           filter.</span
