@@ -44,20 +44,6 @@
   </table>
   <% } %>
 </div>
-<script>
-  function changeAccess(id, access) {
-    $.ajax({
-      url: "/admin/customer_management",
-      type: "patch",
-      data: {
-        userID: id,
-        currentAccess: access,
-      },
-      success: (res) => {
-        $("#"+id).load(location.href + " #"+id);
-      },
-    });
-  }
-</script>
+<script src="/public/js/admin/admin.js"></script>
 
 <%- include('../layouts/footer') %>

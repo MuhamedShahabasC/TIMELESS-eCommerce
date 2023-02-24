@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const app = express();
 
@@ -14,7 +15,7 @@ require("./config/db");
 const session = require("express-session");
 app.use(
   session({
-    secret: "timeless-ecommerce-project-secretkey",
+    secret: process.env.SESSION_SECRET,
     name: "TIMELESS-Session",
     resave: false,
     saveUninitialized: true,
@@ -52,7 +53,6 @@ app.all("*", async (req, res) => {
 });
 
 // Create Server
-require("dotenv").config();
 const PORT = process.env.PORT;
 app.listen(PORT, (err) => {
   if (err) {

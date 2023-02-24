@@ -19,22 +19,40 @@
         <div
           class="col-lg-9 prod-details d-flex flex-grow-1 flex-column justify-content-between"
         >
-          <h5><a href="/products/<%=product._id%>" style="color: black !important;"><%=product.name%></a></h5>
+          <h5>
+            <a href="/products/<%=product._id%>" style="color: black !important"
+              ><%=product.name%></a
+            >
+          </h5>
           <h6><%=product.brand%></h6>
           <span style="font-size: 0.85rem"> Price: <%=product.price%></span>
           <div class="d-flex justify-content-between mt-2">
-            <a href="/products/<%=product._id%>" style="color: black !important; background-color: #dbdbdb;font-size: 0.75rem;" class="button-div btn-light btn btn-sm">View product</a>
+            <a
+              href="/products/<%=product._id%>"
+              style="
+                color: black !important;
+                background-color: #dbdbdb;
+                font-size: 0.75rem;
+              "
+              class="button-div btn-light btn btn-sm"
+              >View product</a
+            >
             <button
               onclick="addToCartFromWishlist('<%=product._id%>')"
               class="btn btn-secondary btn-sm text-white mx-2 button-div"
-              ><span style="letter-spacing: 1px; font-size: 0.75rem;">→ cart</span></button
             >
+              <span style="letter-spacing: 1px; font-size: 0.75rem"
+                >→ cart</span
+              >
+            </button>
             <button
-              class="btn  btn-sm text-white button-div "
-              style="background-color: #dbdbdb;color: black !important;"
+              class="btn btn-sm text-white button-div"
+              style="background-color: #dbdbdb; color: black !important"
               onclick="removeFromWishlist('<%=product._id%>')"
             >
-              <span style="letter-spacing: 1px; font-size: 0.75rem;">Remove</span>
+              <span style="letter-spacing: 1px; font-size: 0.75rem"
+                >Remove</span
+              >
             </button>
           </div>
         </div>
@@ -44,7 +62,7 @@
         No products on your wishlist yet.
       </h5>
       <div class="text-center my-4 fw-bold">
-        <a href="/" class=" fst-italic"
+        <a href="/" class="fst-italic"
           >Continue shopping <i class="fa fa-arrow-right"></i
         ></a>
       </div>
@@ -52,57 +70,5 @@
     </div>
   </div>
 </div>
-<script>
-  function removeFromWishlist(id) {
-    Swal.fire({
-      text: "Proceed to delete?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        $.ajax({
-          url: "/users/wishlist/",
-          method: "delete",
-          data: {
-            productID: id,
-          },
-          success: (res) => {
-            if (res.data.deleted) {
-              $("#wishlist").load(location.href + " #wishlist");
-            }
-          },
-        });
-      }
-    });
-  }
-  function addToCartFromWishlist(productID){
-      $.ajax({
-        url: '/users/cart',
-        method: 'post',
-        data: {
-          id : productID 
-        },
-        success: (res) => {
-            if(res.success==='addedToCart' || res.success === 'countAdded') {
-                 Swal.fire({
-                toast: true,
-                icon: 'success',
-                position: 'top-right',
-                showConfirmButton: false,
-                timer: 1000,
-                timerProgressBar: true,
-                animation: true,
-                title: 'Added to cart'})
-                $("#wishlist").load(location.href + " #wishlist");
-          } else{
-                window.location.href = "/users/signIn";
-          }
-        }
-      })
-    }
-</script>
-
+<script src="/public/js/user/wishlist.js"></script>
 <%- include('../layouts/footer') %>

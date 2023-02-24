@@ -73,26 +73,7 @@
           />
         </div>
         <span id="couponMessage" class="bg-light px-2 rounded m-2">
-
         </span>
-        <script>
-          function checkCoupon(){
-            $.ajax({
-              url: "/users/cart/checkout",
-              method: "put",
-              data: {
-                couponCode: $("#couponCode").val()
-              },
-              success: (res) => {
-                $("#couponMessage").html(res.data.couponCheck)
-                $("#couponDiscount").html(res.data.discountPrice)
-                $("#inputCouponDiscount").val(res.data.discountPrice)
-                $("#finalPrice").html(res.data.finalPrice)
-                $("#inputFinalPrice").val(res.data.finalPrice)
-              }
-            })
-          }
-        </script>
     </div>
     <div class="order-summary rounded p-3 my-3 d-flex flex-column" style="border: 1px solid #dbdbdb; font-size: 0.9rem;">
       <div class="d-flex justify-content-between border-bottom p-1">
@@ -156,6 +137,5 @@
     </div>
   </div>
 </div>
-
-
+<script src="/public/js/user/checkout.js"></script>
 <%- include('../layouts/footer') %>

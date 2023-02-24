@@ -159,32 +159,5 @@
         <% } %>
   </div>
 </div>
-<script>
-    function deleteBanner(id){
-        $.ajax({
-            url: "/admin/banner_management",
-      type: "delete",
-      data: {
-        bannerID: id,
-      },
-      success: (res) => {
-        $("#allBanners").load(location.href + " #allBanners");
-      },
-        })
-    }
-  function changeActivity(id, active) {
-    $.ajax({
-      url: "/admin/banner_management",
-      type: "patch",
-      data: {
-        bannerID: id,
-        currentActivity: active,
-      },
-      success: (res) => {
-        $("#Action"+id).load(location.href + " #Action"+id);
-      },
-    });
-  }
-</script>
-
+<script src="/public/js/admin/admin.js"></script>
 <%- include('../layouts/footer') %>

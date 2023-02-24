@@ -64,21 +64,6 @@
   </table>
   <% } %>
 </div>
-<script>
-  function deliverOrder(id, i) {
-    $.ajax({
-      url: "/admin/orders",
-      type: "patch",
-      data: {
-        orderID: id,
-      },
-      success: (res) => {
-        if (res.data.delivered === 1) {
-          $("#deliver" + i).load(location.href + " #deliver" + i);
-        }
-      },
-    });
-  }
-</script>
+<script src="/public/js/admin/admin.js"></script>
 
 <%- include('../layouts/footer') %>
